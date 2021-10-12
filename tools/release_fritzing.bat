@@ -1,4 +1,4 @@
-REM echo off
+@echo off
 
 echo .
 echo you must start this script from the Visual Studio Command Line Window
@@ -30,12 +30,12 @@ IF .%2 == . (
 )
 
 IF .%3 == . (
-	echo third parameter--visual studio version--is missing, should be "2012", "2013", "2015", "2017"
+	echo third parameter--visual studio version--is missing, should be "2012", "2013", "2015", "2017", "2019"
 	EXIT /B 1
 )
 
-echo add the path for your git installation if it's not already there
-set PATH=%PATH%;"C:\Program Files (x86)\Git\bin";
+echo add the path for your git and 7-Zip installation directories if not already there
+set PATH=%PATH%;"C:\Program Files (x86)\Git\bin";"C:\Program Files\7-Zip";
 
 echo set the path to the qt sdk bin folder
 IF %2==64 (
@@ -47,6 +47,8 @@ IF %2==64 (
 	set QTBIN=C:\Qt\5.6\msvc2015_64\bin
     ) ELSE IF %3==2017 (
         set QTBIN=C:\Qt\5.12.7\msvc2017_64\bin
+    ) ELSE IF %3==2019 (
+        set QTBIN=C:\Qt\5.15.2\msvc2019_64\bin
     )
 	set arch=""QMAKE_TARGET.arch=x86_64""
 ) ELSE (
@@ -84,7 +86,6 @@ set LIBGIT2=%~dp0..\..\libgit2\build%2
 rem set environment variable for qmake phoenix.pro
 set RELEASE_SCRIPT="release_script"
 
-
 %QMAKE% -o Makefile phoenix.pro %arch% || exit /b 1
 
 echo building fritzing
@@ -96,7 +97,7 @@ pushd %DESTDIR%
 set DESTDIR=%CD%
 popd
 
-set RELEASE_NAME=%DESTDIR%\forzip\fritzing-%1.%2.pc
+set RELEASE_NAME=%DESTDIR%\forzip\fritzing-%1-%2.pc
 
 echo setting up deploy folder. ignore any "The system cannot find ..." messages
 rmdir %DESTDIR%\deploy /s /q
@@ -112,6 +113,7 @@ mkdir %DESTDIR%\deploy\lib
 mkdir %DESTDIR%\deploy\lib\imageformats
 mkdir %DESTDIR%\deploy\lib\sqldrivers
 mkdir %DESTDIR%\deploy\lib\printsupport
+
 echo deploy folder ready.  any further "The system cannot find ..." messages represent significant problems with the script
 echo.
 
@@ -135,13 +137,20 @@ copy %QTBIN%\..\plugins\sqldrivers\qsqlite.dll %DESTDIR%\deploy\lib\sqldrivers\q
 copy %QTBIN%\..\plugins\platforms\qwindows.dll %DESTDIR%\deploy\platforms\qwindows.dll
 copy %QTBIN%\..\plugins\printsupport\windowsprintersupport.dll  %DESTDIR%\deploy\lib\printsupport\windowsprintersupport.dll
 
-echo copying git2.dll from %LIBGIT2%
-copy %LIBGIT2%\Release\git2.dll  %DESTDIR%\deploy\git2.dll
-
+if exist %LIBGIT2%\Release\git2.dll (
+  echo copying git2.dll from %LIBGIT2%
+  copy %LIBGIT2%\Release\git2.dll %DESTDIR%\deploy\git2.dll
+) else (
+  rem Check for git2.lib been built as static (default!)
+  if not exist %LIBGIT2%\Release\git2.lib (
+    echo FATAL: libgit2 not build?
+    exit /b 2
+  )
+)
 echo copying sketches, translations, help, README, LICENSE
 echo.
 
-copy  %DESTDIR%\Fritzing.exe %DESTDIR%\deploy\Fritzing.exe
+copy %DESTDIR%\Fritzing.exe %DESTDIR%\deploy\Fritzing.exe
 
 xcopy /q .\translations %DESTDIR%\deploy\translations /E  /I
 
@@ -165,7 +174,7 @@ cd deploy
 
 git clone --branch master --single-branch https://github.com/fritzing/fritzing-parts.git  || exit /b 3
 
-del/s placeholder.txt
+del /s placeholder.txt
 cd translations
 for /f "usebackq delims=;" %%A in (`dir /b *.qm`) do If %%~zA LSS 1024 del "%%A"
 cd %CURRENTDIR%
@@ -193,13 +202,13 @@ IF %3==2012 (
 	copy  "%VCINSTALLDIR%redist\%XFOLDER%\Microsoft.VC140.CRT\vcruntime140.dll" %DESTDIR%\deploy\vcruntime140.dll
 )
 
-echo run fritzing to create parts.db
-%DESTDIR%\deploy\Fritzing.exe -pp %DESTDIR%\deploy\fritzing-parts -db %DESTDIR%\deploy\fritzing-parts\parts.db || exit /b 4
-
-echo moving deploy to %RELEASE_NAME%
+echo moving %DESTDIR%\deploy to %RELEASE_NAME%
 move %DESTDIR%\deploy %RELEASE_NAME%
 
+echo run fritzing to create parts.db
+%RELEASE_NAME%\Fritzing.exe -pp %RELEASE_NAME%\fritzing-parts -db %RELEASE_NAME%\fritzing-parts\parts.db || exit /b 4
+
 echo create zip file
-7z a "%DESTDIR%\fritzing-%1.windows.%2.zip" "%DESTDIR%\forzip"
+7z a "%RELEASE_NAME%.zip" %RELEASE_NAME%
 
 echo done

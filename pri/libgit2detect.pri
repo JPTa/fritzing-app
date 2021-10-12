@@ -47,8 +47,8 @@ win32 {
         error("libgit2 library not found in $$LIBGIT2LIB")
     }
 
-    LIBS += -L$$LIBGIT2LIB -lgit2
-    message($$PKGCONFIG)
+    LIBS += -L$$LIBGIT2LIB -lgit2 -lwinhttp -lrpcrt4 -lcrypt32 -lole32 -ladvapi32
+    #message($$PKGCONFIG)
 }
 
 unix {

@@ -61,12 +61,19 @@ PaletteItemBase::PaletteItemBase(ModelPart * modelPart, ViewLayer::ViewID viewID
 	setAcceptHoverEvents(true);
 
 	if (hasPartNumberProperty()) {
-		QString savedValue = modelPart->localProp(ModelPartShared::PartNumberPropertyName).toString();
-		if (savedValue.isEmpty()) {
-			savedValue = modelPart->properties().value(ModelPartShared::PartNumberPropertyName, "");
-			if (!savedValue.isEmpty()) {
-				modelPart->setLocalProp(ModelPartShared::PartNumberPropertyName, savedValue);
-			}
+		for (auto&& propertyName : {ModelPartShared::MNPropertyName, ModelPartShared::MPNPropertyName, ModelPartShared::PartNumberPropertyName}) {
+			initLocalProperty(propertyName, modelPart);
+		}
+	}
+}
+
+void PaletteItemBase::initLocalProperty(const QString & propertyName, ModelPart * modelPart)
+{
+	QString savedValue = modelPart->localProp(propertyName).toString();
+	if (savedValue.isEmpty()) {
+		savedValue = modelPart->properties().value(propertyName, "");
+		if (!savedValue.isEmpty()) {
+			modelPart->setLocalProp(propertyName, savedValue);
 		}
 	}
 }
@@ -660,32 +667,46 @@ bool PaletteItemBase::canEditPart() {
 
 bool PaletteItemBase::collectExtraInfo(QWidget * parent, const QString & family, const QString & prop, const QString & value, bool swappingEnabled, QString & returnProp, QString & returnValue, QWidget * & returnWidget, bool & hide)
 {
-	if (prop.compare(ModelPartShared::PartNumberPropertyName, Qt::CaseInsensitive) == 0) {
+	for (auto&& propertyName : {ModelPartShared::MNPropertyName, ModelPartShared::MPNPropertyName, ModelPartShared::PartNumberPropertyName}) {
+		if (collectExtraInfoPartNumber(propertyName, prop, swappingEnabled, returnProp, returnValue, returnWidget)) return true;
+	}
+	return ItemBase::collectExtraInfo(parent, family, prop, value, swappingEnabled, returnProp, returnValue, returnWidget, hide);
+}
+
+bool PaletteItemBase::collectExtraInfoPartNumber(const QString & propertyName, const QString & prop, bool swappingEnabled, QString & returnProp, QString & returnValue, QWidget * & returnWidget)
+{
+	if (prop.compare(propertyName, Qt::CaseInsensitive) == 0) {
 		returnProp = TranslatedPropertyNames.value(prop);
 
 		QLineEdit * lineEdit = new QLineEdit();
 		lineEdit->setEnabled(swappingEnabled);
-		QString current = m_modelPart->localProp(ModelPartShared::PartNumberPropertyName).toString();
+		QString current = m_modelPart->localProp(propertyName).toString();
 		lineEdit->setText(current);
+		lineEdit->setProperty("property name for entry", propertyName);
 		connect(lineEdit, SIGNAL(editingFinished()), this, SLOT(partPropertyEntry()));
 		lineEdit->setObjectName("infoViewLineEdit");
 		returnWidget = lineEdit;
 		returnValue = current;
 		return true;
 	}
-
-	return ItemBase::collectExtraInfo(parent, family, prop, value, swappingEnabled, returnProp, returnValue, returnWidget, hide);
+	return false;
 }
 
 void PaletteItemBase::setProp(const QString & prop, const QString & value)
 {
-	if (prop.compare(ModelPartShared::PartNumberPropertyName) == 0) {
-		modelPart()->setLocalProp(ModelPartShared::PartNumberPropertyName, value);
+	for (auto&& propertyName : {ModelPartShared::MNPropertyName, ModelPartShared::MPNPropertyName, ModelPartShared::PartNumberPropertyName}) {
+		setLocalProp(prop, value, propertyName);
+	}
+	ItemBase::setProp(prop, value);
+}
+
+void PaletteItemBase::setLocalProp(const QString & prop, const QString & value, const QString & propertyName)
+{
+	if (prop.compare(propertyName) == 0) {
+		modelPart()->setLocalProp(propertyName, value);
 		if (m_partLabel) m_partLabel->displayTextsIf();
 		return;
 	}
-
-	ItemBase::setProp(prop, value);
 }
 
 void PaletteItemBase::partPropertyEntry() {
@@ -694,7 +715,8 @@ void PaletteItemBase::partPropertyEntry() {
 
 	InfoGraphicsView * infoGraphicsView = InfoGraphicsView::getInfoGraphicsView(this);
 	if (infoGraphicsView) {
-		infoGraphicsView->setProp(this, ModelPartShared::PartNumberPropertyName, "", m_modelPart->localProp(ModelPartShared::PartNumberPropertyName).toString(), lineEdit->text(), true);
+		QString propertyName = lineEdit->property("property name for entry").toString();
+		infoGraphicsView->setProp(this, propertyName, "", m_modelPart->localProp(propertyName).toString(), lineEdit->text(), true);
 	}
 }
 

@@ -102,14 +102,17 @@ static constexpr double InactiveOpacity = 0.4;
 
 ///////////////////////////////////////////
 
-PartLabel::PartLabel(ItemBase * owner, QGraphicsItem * parent)
+PartLabel::PartLabel(ItemBase * owner, QWidget *parentWidget, QGraphicsItem * parent)
 	: QGraphicsSvgItem(parent),
-	  m_owner(owner)
+	  m_owner(owner),
+	  m_parentWidget(parentWidget)
 
 {
 	m_displayKeys.append(LabelTextKey);
 	if (m_owner->hasPartNumberProperty() && m_owner->viewID() != ViewLayer::PCBView) {
-		m_displayKeys.append(ModelPartShared::PartNumberPropertyName);
+		for (auto&& propertyName : {ModelPartShared::MNPropertyName, ModelPartShared::MPNPropertyName, ModelPartShared::PartNumberPropertyName}) {
+			m_displayKeys.append(propertyName);
+		}
 	}
 
 	setFlag(QGraphicsItem::ItemIsSelectable, false);
@@ -117,6 +120,10 @@ PartLabel::PartLabel(ItemBase * owner, QGraphicsItem * parent)
 	setVisible(false);
 	setAcceptHoverEvents(true);
 	AllPartLabels.insert(m_owner->id(), this);
+	// No translation needed, the menu title is only shown if the menu is added
+	// to a menu bar
+	//	m_menu = new QMenu(QObject::tr("PartLabel"), m_parentWidget);
+	m_menu = new QMenu("PartLabel", m_parentWidget);
 }
 
 PartLabel::~PartLabel()
@@ -156,8 +163,11 @@ void PartLabel::showLabel(bool showIt, ViewLayer * viewLayer) {
 		QPointF initial = (flipped)
 		                  ? m_owner->pos() + QPointF(-tbr.width(), -tbr.height())
 		                  : m_owner->pos() + QPointF(obr.width(), -tbr.height());
-		this->setPos(initial);
-		m_offset = initial - m_owner->pos();
+		if (!m_initializedPos) {
+			this->setPos(initial);
+			m_offset = initial - m_owner->pos();
+			m_initializedPos = true;
+		}
 		if (flipped) {
 			transformLabel(QTransform().scale(-1,1));
 		}
@@ -378,7 +388,11 @@ void PartLabel::restoreLabel(QDomElement & labelGeometry, ViewLayer::ViewLayerID
 
 	if (m_displayKeys.length() == 0) {
 		m_displayKeys.append(LabelTextKey);
-		if (m_owner->hasPartNumberProperty()) m_displayKeys.append(ModelPartShared::PartNumberPropertyName);
+		if (m_owner->hasPartNumberProperty()) {
+			for (auto&& propertyName : {ModelPartShared::MNPropertyName, ModelPartShared::MPNPropertyName, ModelPartShared::PartNumberPropertyName}) {
+				m_displayKeys.append(propertyName);
+			}
+		}
 	}
 
 	displayTexts();
@@ -392,7 +406,13 @@ void PartLabel::restoreLabel(QDomElement & labelGeometry, ViewLayer::ViewLayerID
 void PartLabel::moveLabel(QPointF newPos, QPointF newOffset)
 {
 	this->setPos(newPos);
+	m_initializedPos = true;
 	m_offset = newOffset;
+}
+
+QPointF PartLabel::getOffset()
+{
+	return m_offset;
 }
 
 ItemBase * PartLabel::owner() {
@@ -402,20 +422,19 @@ ItemBase * PartLabel::owner() {
 void PartLabel::initMenu()
 {
 	// todo: make this a static var?
-
-	QAction *editAct = m_menu.addAction(tr("Edit"));
+	QAction *editAct = m_menu->addAction(tr("Edit"));
 	editAct->setData(QVariant(PartLabelEdit));
 	editAct->setStatusTip(tr("Edit label text"));
 
-	QAction *hideAct = m_menu.addAction(tr("Hide"));
+	QAction *hideAct = m_menu->addAction(tr("Hide"));
 	hideAct->setData(QVariant(PartLabelHide));
 	hideAct->setStatusTip(tr("Hide part label"));
 
-	m_menu.addSeparator();
+	m_menu->addSeparator();
 
-	QMenu * dvmenu = m_menu.addMenu(tr("Display Values"));
-	QMenu * rlmenu = m_menu.addMenu(tr("Flip/Rotate"));
-	QMenu * fsmenu = m_menu.addMenu(tr("Font Size"));
+	QMenu * dvmenu = m_menu->addMenu(tr("Display Values"));
+	QMenu * rlmenu = m_menu->addMenu(tr("Flip/Rotate"));
+	QMenu * fsmenu = m_menu->addMenu(tr("Font Size"));
 
 	bool include45 = (m_owner) && (m_owner->viewID() == ViewLayer::PCBView);
 
@@ -574,7 +593,7 @@ void PartLabel::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 		return;
 	}
 
-	if (m_menu.isEmpty()) {
+	if (m_menu->isEmpty()) {
 		initMenu();
 	}
 
@@ -605,7 +624,7 @@ void PartLabel::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 		}
 	}
 
-	QAction *selectedAction = m_menu.exec(event->screenPos());
+	QAction *selectedAction = m_menu->exec(event->screenPos());
 	if (selectedAction == NULL) return;
 
 	PartLabelAction action = (PartLabelAction) selectedAction->data().toInt();

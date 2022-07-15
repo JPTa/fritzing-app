@@ -56,7 +56,7 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "items/propertydef.h"
 #include "dialogs/recoverydialog.h"
 #include "processeventblocker.h"
-#include "autoroute/panelizer.h"
+#include "autoroute/checker.h"
 #include "sketch/sketchwidget.h"
 #include "sketch/pcbsketchwidget.h"
 #include "help/firsttimehelpdialog.h"
@@ -151,7 +151,7 @@ void FServerThread::run()
 
 	DebugDialog::debug("header " + header);
 
-	QStringList tokens = header.split(QRegExp("[ \r\n][ \r\n]*"), QString::SkipEmptyParts);
+	QStringList tokens = header.split(QRegExp("[ \r\n][ \r\n]*"), Qt::SplitBehaviorFlags::SkipEmptyParts);
 	if (tokens.count() <= 0) {
 		writeResponse(socket, 400, "Bad Request", "", "");
 		return;
@@ -167,7 +167,7 @@ void FServerThread::run()
 		return;
 	}
 
-	QStringList params = tokens.at(1).split("/", QString::SkipEmptyParts);
+	QStringList params = tokens.at(1).split("/", Qt::SplitBehaviorFlags::SkipEmptyParts);
 	QString command = params.takeFirst();
 	if (params.count() == 0) {
 		writeResponse(socket, 400, "Bad Request", "", "");
@@ -322,7 +322,7 @@ void RegenerateDatabaseThread::run() {
 	if (QFile::exists(m_dbFileName)) {
 		ok = QFile::remove(m_dbFileName);
 		if (!ok) {
-			m_error = tr("Unable to remove original db file %1").arg(m_dbFileName);
+			m_error = tr("Unable to replace the existing database file %1").arg(m_dbFileName);
 			return;
 		}
 	}
@@ -491,33 +491,6 @@ int FApplication::init() {
 			m_serviceType = GerberService;
 			DebugDialog::setEnabled(true);
 			m_outputFolder = m_arguments[i + 1];
-			toRemove << i << i + 1;
-		}
-
-		if ((m_arguments[i].compare("-p", Qt::CaseInsensitive) == 0) ||
-		        (m_arguments[i].compare("-panel", Qt::CaseInsensitive) == 0)||
-		        (m_arguments[i].compare("--panel", Qt::CaseInsensitive) == 0)) {
-			m_serviceType = PanelizerService;
-			m_panelFilename = m_arguments[i + 1];
-			m_outputFolder = " ";					// otherwise program will bail out
-			m_panelizerCustom = false;
-			toRemove << i << i + 1;
-		}
-
-		if ((m_arguments[i].compare("-pc", Qt::CaseInsensitive) == 0)) {
-			m_serviceType = PanelizerService;
-			m_panelFilename = m_arguments[i + 1];
-			m_outputFolder = " ";					// otherwise program will bail out
-			m_panelizerCustom = true;
-			toRemove << i << i + 1;
-		}
-
-		if ((m_arguments[i].compare("-i", Qt::CaseInsensitive) == 0) ||
-		        (m_arguments[i].compare("-inscription", Qt::CaseInsensitive) == 0)||
-		        (m_arguments[i].compare("--inscription", Qt::CaseInsensitive) == 0)) {
-			m_serviceType = InscriptionService;
-			m_panelFilename = m_arguments[i + 1];
-			m_outputFolder = " ";					// otherwise program will bail out
 			toRemove << i << i + 1;
 		}
 
@@ -750,6 +723,7 @@ void FApplication::registerFonts() {
 	registerFont(":/resources/fonts/DroidSans-Bold.ttf", false);
 	registerFont(":/resources/fonts/DroidSansMono.ttf", false);
 	registerFont(":/resources/fonts/OCRA.ttf", true);
+	registerFont(":/resources/fonts/Segment16/Segment16C Bold.ttf", true);
 
 	// "Droid Sans"
 	// "Droid Sans Mono"
@@ -859,14 +833,6 @@ int FApplication::serviceStartup() {
 
 	case SvgService:
 		runSvgService();
-		return 0;
-
-	case PanelizerService:
-		runPanelizerService();
-		return 0;
-
-	case InscriptionService:
-		runInscriptionService();
 		return 0;
 
 	case ExampleService:
@@ -1019,8 +985,8 @@ void FApplication::runDRCService() {
 			}
 
 
-			Panelizer::checkDonuts(mainWindow, true);
-			Panelizer::checkText(mainWindow, true);
+			Checker::checkDonuts(mainWindow, true);
+			Checker::checkText(mainWindow, true);
 
 			QList<ItemBase *> boards = mainWindow->pcbView()->findBoard();
 			foreach (ItemBase * boardItem, boards) {
@@ -1275,7 +1241,7 @@ void FApplication::preferencesAfter()
 {
 	QDir dir(m_translationPath);
 	QStringList nameFilters;
-	nameFilters << "*.qm";
+	nameFilters << "fritzing_*.qm";
 	QFileInfoList languages = dir.entryInfoList(nameFilters, QDir::Files | QDir::NoSymLinks);
 	QSettings settings;
 	QString language = settings.value("language").toString();
@@ -1300,7 +1266,7 @@ void FApplication::preferencesAfter()
 
 	QList<Platform *> platforms = mainWindow->programmingWidget()->getAvailablePlatforms();
 
-	prefsDialog.initLayout(languages, platforms);
+	prefsDialog.initLayout(languages, platforms, mainWindow->isSimulatorEnabled());
 	if (QDialog::Accepted == prefsDialog.exec()) {
 		updatePrefs(prefsDialog);
 	}
@@ -1349,6 +1315,11 @@ void FApplication::updatePrefs(PrefsDialog & prefsDialog)
 						sketchWidget->setCurvyWires(hash.value(key).compare("1") == 0);
 					}
 				}
+			}
+		}
+		else if (key.compare("simulatorEnabled") == 0) {
+			foreach (MainWindow * mainWindow, mainWindows) {
+				mainWindow->enableSimulator(hash.value(key).toInt());
 			}
 		}
 	}
@@ -1600,7 +1571,6 @@ bool FApplication::notify(QObject *receiver, QEvent *e)
 		                      .arg(str).arg(receiver->objectName()).arg(e->type()));
 	}
 	catch (std::exception& exp) {
-		// suggested in https://code.google.com/p/fritzing/issues/detail?id=2698
 		qDebug() << QString("notify %1 %2").arg(receiver->metaObject()->className()).arg(e->type());
 		FMessageBox::critical(NULL, tr("Fritzing failure"), tr("Fritzing caught an exception from %1 in event %2: %3").arg(receiver->objectName()).arg(e->type()).arg(exp.what()));
 	}
@@ -1790,28 +1760,6 @@ void FApplication::gotOrderFab(QNetworkReply * networkReply) {
 	}
 	networkReply->manager()->deleteLater();
 	networkReply->deleteLater();
-}
-
-void FApplication::runPanelizerService()
-{
-	m_started = true;
-	Panelizer::panelize(this, m_panelFilename, m_panelizerCustom);
-}
-
-void FApplication::runInscriptionService()
-{
-	m_started = true;
-	bool drc = false;
-	bool noMessages = false;
-	foreach (QString arg, m_arguments) {
-		if (arg.compare("-drc", Qt::CaseInsensitive) == 0) {
-			drc = true;
-		}
-		if (arg.compare("-nm", Qt::CaseInsensitive) == 0) {
-			noMessages = true;
-		}
-	}
-	Panelizer::inscribe(this, m_panelFilename, drc, noMessages);
 }
 
 QList<MainWindow *> FApplication::orderedTopLevelMainWindows() {
@@ -2009,8 +1957,10 @@ void FApplication::regeneratePartsDatabase() {
 	messageBox.setText(tr("Regenerating the parts database will take some minutes and you will have to restart Fritzing\n\n") +
 	                   tr("Would you like to regenerate the parts database?\n")
 	                  );
-	messageBox.setInformativeText("This option is a last resort in case Fritzing's is more-or-less unable to display parts. "
-	                              "You may be better off downloading the latest Fritzing release.");
+	messageBox.setInformativeText(tr("This option is usefull if you modify the parts database on your own. "
+									 "If you want to recover from an error, "
+								  "you may be better off downloading the latest Fritzing release."
+									 ));
 	messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 	messageBox.setDefaultButton(QMessageBox::Yes);
 	messageBox.setIcon(QMessageBox::Question);

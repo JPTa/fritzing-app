@@ -40,7 +40,7 @@ public:
 	static void findElementsWithAttribute(QDomElement & element, const QString & att, QList<QDomElement> & elements);
 	static double convertToInches(const QString & string, bool * ok, bool isIllustrator);
 	static double convertToInches(const QString & string);
-	static QString convertToPowerPrefix(double);
+	static QString convertToPowerPrefix(double, char f='g', int prec=6);
 	static double convertFromPowerPrefix(const QString & val, const QString & symbol);
 	static double convertFromPowerPrefixU(QString & val, const QString & symbol);
 
@@ -60,6 +60,7 @@ public:
 	static bool fixPixelDimensionsIn(QString &fileContent);
 	static bool addCopper1(const QString & filename, QDomDocument & doc, const QString & srcAtt, const QString & destAtt);
 	static void setSVGTransform(QDomElement &, QMatrix &);
+	static void setSVGTransform(QDomElement &, QTransform &);
 	static QString svgMatrix(const QMatrix &);
 	static QString svgMatrix(const QTransform &);
 	static QString svgTransform(const QString & svg, QTransform & transform, bool translate, const QString extra);
@@ -70,6 +71,8 @@ public:
 	static QString escapeAnd(const QString &);
 	static QMatrix elementToMatrix(QDomElement & element);
 	static QMatrix transformStringToMatrix(const QString & transform);
+	static QTransform elementToTransform(QDomElement & element);
+	static QTransform transformStringToTransform(const QString & transform);
 	static QList<double> getTransformFloats(QDomElement & element);
 	static QList<double> getTransformFloats(const QString & transform);
 	static QString svgNSOnly(QString svgContent);
@@ -133,6 +136,7 @@ public:
 	static const QString RegexFloatDetector;
 	static const QString AdobeIllustratorIdentifier;
 
+	static QMap<QString, QString> parseFileForViewImages(const QString &fzpPath);
 protected:
 	static bool pxToInches(QDomElement &elem, const QString &attrName, bool isIllustrator);
 	static void squashNotElement(QDomElement & element, const QString & elementName, const QString & attName, const QRegExp & matchContent, bool & result);

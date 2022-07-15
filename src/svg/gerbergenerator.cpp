@@ -515,7 +515,7 @@ QString GerberGenerator::clipToBoard(QString svgString, QRectF & boardRect, cons
 		for (int i = 0; i < transformCount1; i++) {
 			QString n = QString::number(i);
 			QRectF bounds = renderer.boundsOnElement(n);
-			QMatrix m = renderer.matrixForElement(n);
+			QTransform m = renderer.transformForElement(n);
 			QDomElement element = leaves1.at(i);
 			QRectF mBounds = m.mapRect(bounds);
 			if (mBounds.left() < sourceRes.left() - 0.1|| mBounds.top() < sourceRes.top() - 0.1 || mBounds.right() > sourceRes.right() + 0.1 || mBounds.bottom() > sourceRes.bottom() + 0.1) {
@@ -552,7 +552,7 @@ QString GerberGenerator::clipToBoard(QString svgString, QRectF & boardRect, cons
 		for (int i = newHoles.count() - 1; i >= 0; i--) {
 			QString id = QString("__%1__").arg(i);
 			QRectF bounds = renderer.boundsOnElement(id);
-			QMatrix m = renderer.matrixForElement(id);
+			QTransform m = renderer.transformForElement(id);
 			QDomElement newElement = newHoles.at(i);
 			QRectF mBounds = m.mapRect(bounds);
 			if (mBounds.left() < sourceRes.left() - 0.1 || mBounds.top() < sourceRes.top() - 0.1 || mBounds.right() > sourceRes.right() + 0.1 || mBounds.bottom() > sourceRes.bottom() + 0.1) {
@@ -593,7 +593,7 @@ QString GerberGenerator::clipToBoard(QString svgString, QRectF & boardRect, cons
 
 			QString n = QString::number(i);
 			QRectF bounds = renderer.boundsOnElement(n);
-			QMatrix m = renderer.matrixForElement(n);
+			QTransform m = renderer.transformForElement(n);
 			QRectF mBounds = m.mapRect(bounds);
 
 			int x1 = qFloor(qMax(0.0, mBounds.left() - sourceRes.left()));          // atmel compiler fails without cast
@@ -816,6 +816,13 @@ QString GerberGenerator::makePath(QImage & image, double unit, const QString & c
 				whiteStart = x;
 			}
 		}
+		if (inWhite) {
+			paths += QString("M%1,%2L%3,%2 ").arg(whiteStart + halfUnit).arg(y + halfUnit).arg(image.width() - 1 + halfUnit);
+			if (++lineCount == 10) {
+				lineCount = 0;
+				paths += "\n";
+			}
+		}
 	}
 
 	QString path = QString("<path fill='none' stroke='%1' stroke-width='%2' stroke-linecap='square' d='").arg(colorString).arg(unit);
@@ -949,15 +956,16 @@ void GerberGenerator::exportPickAndPlace(const QString & prefix, const QString &
 		double angle = atan2(transform.m12(), transform.m11()) * 180 / M_PI;
 		// No;Value;Package;X;Y;Rotation;Side;Name
 		QString string = QString("%1;%2;%3;%4;%5;%6;%7;%8\n")
-		                 .arg(ix++)
-						 .arg(value
-						 , itemBase->modelPart()->properties().value("package"))
-		                 .arg(GraphicsUtils::pixels2mm(loc.x() - bottomLeft.x(), GraphicsUtils::SVGDPI))
-		                 .arg(GraphicsUtils::pixels2mm(loc.y() - bottomLeft.y(), GraphicsUtils::SVGDPI))
-		                 .arg(angle)
-		                 .arg(itemBase->viewLayerID() == ViewLayer::Copper1 ? "Top" : "Bottom")
-		                 .arg(itemBase->instanceTitle())
-		                 ;
+					.arg(ix++)
+					.arg(value
+						,itemBase->modelPart()->properties().value("package")
+					)
+					.arg(GraphicsUtils::pixels2mm(loc.x() - bottomLeft.x(), GraphicsUtils::SVGDPI))
+					.arg(GraphicsUtils::pixels2mm(loc.y() - bottomLeft.y(), GraphicsUtils::SVGDPI))
+					.arg(angle)
+					.arg(itemBase->viewLayerID() == ViewLayer::Copper1 ? "Top" : "Bottom"
+						,itemBase->instanceTitle()
+					);
 		stream << string;
 		stream.flush();
 	}

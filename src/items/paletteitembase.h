@@ -97,6 +97,9 @@ protected:
 	virtual LayerKinPaletteItem * newLayerKinPaletteItem(PaletteItemBase * chief, ModelPart *, const ViewGeometry &, long id, QMenu* itemMenu, const LayerHash &, LayerAttributes &);
 	virtual void setInitialTransform(const QTransform &);
 	virtual void cacheLoaded(const LayerAttributes &);
+	bool collectExtraInfoPartNumber(const QString & propertyName, const QString & prop, bool swappingEnabled, QString & returnProp, QString & returnValue, QWidget * & returnWidget);
+	void initLocalProperty(const QString & propertyName, ModelPart * modelPart);
+	void setLocalProp(const QString & prop, const QString & value, const QString & propertyName);
 
 protected slots:
 	void partPropertyEntry();

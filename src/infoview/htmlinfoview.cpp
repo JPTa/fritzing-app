@@ -107,6 +107,7 @@ HtmlInfoView::HtmlInfoView(QWidget * parent) : QScrollArea(parent)
 	this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	m_lastTitleItemBase = NULL;
+	m_lastSpiceModelPart = NULL;
 	m_lastTagsModelPart = NULL;
 	m_lastConnectorItem = NULL;
 	m_lastIconItemBase = NULL;
@@ -121,6 +122,7 @@ HtmlInfoView::HtmlInfoView(QWidget * parent) : QScrollArea(parent)
 	m_lockCheckbox = NULL;
 	m_stickyCheckbox = NULL;
 	m_connDescr = NULL;
+	m_spiceTextLabel = NULL;
 	m_tagsTextLabel = NULL;
 	m_lastSwappingEnabled = false;
 	m_lastItemBase = NULL;
@@ -276,6 +278,15 @@ void HtmlInfoView::init(bool tinyMode) {
 	m_propFrame->setLayout(m_propLayout);
 	vlo->addWidget(m_propFrame);
 
+	m_spiceLabel = new QLabel(tr("SPICE"), NULL);
+	m_spiceLabel->setObjectName("expandableViewLabel");
+	vlo->addWidget(m_spiceLabel);
+
+	m_spiceTextLabel = new TagLabel(this);
+	m_spiceTextLabel->setWordWrap(true);
+	m_spiceTextLabel->setObjectName("tagsValue");
+	vlo->addWidget(m_spiceTextLabel);
+
 	m_tagLabel = new QLabel(tr("Tags"), NULL);
 	m_tagLabel->setObjectName("expandableViewLabel");
 	vlo->addWidget(m_tagLabel);
@@ -300,7 +311,7 @@ void HtmlInfoView::init(bool tinyMode) {
 	connLayout->setContentsMargins(0, 0, 0, 0);
 	m_connFrame->setLayout(connLayout);
 
-	QLabel * descrLabel = new QLabel(tr("conn."), this);
+	QLabel * descrLabel = new QLabel(tr("connection"), this);
 	descrLabel->setObjectName("connectionsLabel");
 	m_connDescr = new QLabel(this);
 	m_connDescr->setObjectName("connectionsValue");
@@ -498,6 +509,7 @@ void HtmlInfoView::appendItemStuff(ItemBase * itemBase, ModelPart * modelPart, b
 	}
 
 	displayProps(modelPart, itemBase, swappingEnabled);
+	addSpice(modelPart);
 	addTags(modelPart);
 
 	m_placementLabel->setVisible(swappingEnabled);
@@ -526,6 +538,7 @@ void HtmlInfoView::setContent()
 		m_tagLabel->setVisible(true);
 		m_connLabel->setVisible(m_pendingSwappingEnabled);
 	}
+	m_spiceLabel->setVisible(true);
 	m_propLabel->setVisible(true);
 	m_propFrame->setVisible(true);
 
@@ -574,6 +587,7 @@ void HtmlInfoView::setNullContent()
 	partTitle("", "", "", false);
 	setUpIcons(NULL, false);
 	displayProps(NULL, NULL, false);
+	addSpice(NULL);
 	addTags(NULL);
 	viewConnectorItemInfo(NULL, NULL);
 	m_connFrame->setVisible(false);
@@ -581,6 +595,7 @@ void HtmlInfoView::setNullContent()
 	m_propLabel->setVisible(false);
 	m_placementFrame->setVisible(false);
 	m_placementLabel->setVisible(false);
+	m_spiceLabel->setVisible(false);
 	m_tagLabel->setVisible(false);
 	m_connLabel->setVisible(false);
 }
@@ -683,6 +698,29 @@ void HtmlInfoView::setUpIcons(ItemBase * itemBase, bool swappingEnabled) {
 	if (pixmap1) delete pixmap1;
 	if (pixmap2) delete pixmap2;
 	if (pixmap3) delete pixmap3;
+}
+
+void HtmlInfoView::addSpice(ModelPart * modelPart) {
+	if (m_spiceTextLabel == NULL) return;
+
+	if (m_lastSpiceModelPart == modelPart) return;
+
+	m_lastSpiceModelPart = modelPart;
+
+	if (modelPart == NULL) {
+		m_spiceTextLabel->setText("");
+		return;
+	}
+
+	if(modelPart->spice().isEmpty()) {
+		m_spiceTextLabel->setText(tr("No SPICE information. This part will not be simulated."));
+		return;
+	}
+
+	QString spiceText = modelPart->spice().trimmed();
+	if(!modelPart->spiceModel().isEmpty())
+		spiceText.append("\nSPICE model:\n" + modelPart->spiceModel().trimmed());
+	m_spiceTextLabel->setText(spiceText);
 }
 
 void HtmlInfoView::addTags(ModelPart * modelPart) {

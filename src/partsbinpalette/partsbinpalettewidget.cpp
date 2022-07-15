@@ -184,6 +184,10 @@ void PartsBinPaletteWidget::setupHeader()
 	m_binLabel->setWordWrap(false);
 
 	m_searchLineEdit = new SearchLineEdit(this);
+	m_searchLineEdit->setClearButtonEnabled(true);
+//	m_searchLineEdit->addAction(QIcon(":/resources/images/icons/searchField.png"), QLineEdit::TrailingPosition);
+	m_searchLineEdit->setPlaceholderText(tr("Search..."));
+
 	m_searchLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	connect(m_searchLineEdit, SIGNAL(returnPressed()), this, SLOT(search()));
 
@@ -558,7 +562,7 @@ void PartsBinPaletteWidget::load(const QString &filename, QWidget * progressTarg
 
 void PartsBinPaletteWidget::undoStackCleanChanged(bool isClean) {
 	if(!isClean && currentBinIsCore()) {
-		setFilename(QString::null);
+		setFilename(QString());
 	}
 	setWindowModified(!isClean);
 	m_manager->setDirtyTab(this,isClean);
@@ -888,7 +892,7 @@ QMenu * PartsBinPaletteWidget::binContextMenu()
 void PartsBinPaletteWidget::changeIconColor() {
 	QImage image(":resources/bins/icons/" + CustomIconName);
 	QColor initial(image.pixel(image.width() / 2, image.height() / 2));
-	QColor color = QColorDialog::getColor(initial, this, tr("Select a color for this icon"), 0 );
+	QColor color = QColorDialog::getColor(initial, this, tr("Select a color for this icon"), QColorDialog::ColorDialogOptions() );
 	if (!color.isValid()) return;
 
 	QRgb match = initial.rgba();

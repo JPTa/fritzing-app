@@ -33,6 +33,7 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "../fsvgrenderer.h"
 #include "../autoroute/autorouteprogressdialog.h"
 #include "../autoroute/drc.h"
+#include "../autoroute/binpacking/GuillotineBinPack.h"
 #include "../items/groundplane.h"
 #include "../items/jumperitem.h"
 #include "../utils/autoclosemessagebox.h"
@@ -40,9 +41,6 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "../utils/textutils.h"
 #include "../utils/folderutils.h"
 #include "../processeventblocker.h"
-#include "../autoroute/cmrouter/tileutils.h"
-#include "../autoroute/cmrouter/cmrouter.h"
-#include "../autoroute/panelizer.h"
 #include "../autoroute/autoroutersettingsdialog.h"
 #include "../svg/groundplanegenerator.h"
 #include "../items/logoitem.h"
@@ -287,7 +285,7 @@ void PCBSketchWidget::selectAllXTraces(bool autoroutable, const QString & cmdTex
 		ItemBase * board = findSelectedBoard(boardCount);
 		if (boardCount == 0  && autorouteTypePCB()) {
 			QMessageBox::critical(this, tr("Fritzing"),
-			                      tr("Your sketch does not have a board yet! Please add a PCB in order to use this selection operation."));
+			                      tr("Your sketch does not have a board yet! Please add a PCB to use this selection operation."));
 			return;
 		}
 		if (board == NULL) {
@@ -1302,6 +1300,31 @@ bool PCBSketchWidget::acceptsTrace(const ViewGeometry & viewGeometry) {
 	return !viewGeometry.getSchematicTrace();
 }
 
+QList<QGraphicsItem *> PCBSketchWidget::getCollidingItems(QGraphicsItem *target, QGraphicsItem *other) {
+	QList<QGraphicsItem *> collidingItems;
+	foreach (QGraphicsItem * item, scene()->collidingItems(target)) {
+		ItemBase * itemBase = dynamic_cast<ItemBase *>(item);
+		if (itemBase == NULL) continue;
+		if (!itemBase->isEverVisible()) continue;
+		if (itemBase->layerKinChief() != itemBase) continue;
+
+		if (itemBase->layerKinChief() == target) continue;
+		if (itemBase->layerKinChief() == other) continue;
+
+		Wire * wire = qobject_cast<Wire *>(itemBase);
+		if (wire) {
+			if (!wire->getTrace()) continue;
+			if (!wire->isTraceType(getTraceFlag())) continue;
+		}
+		else if (ResizableBoard::isBoard(itemBase)) continue;
+
+		if (!itemBase->modelPart()) continue;
+
+		collidingItems.append(itemBase);
+	}
+	return collidingItems;
+}
+
 ItemBase * PCBSketchWidget::placePartDroppedInOtherView(ModelPart * modelPart, ViewLayer::ViewLayerPlacement viewLayerPlacement, const ViewGeometry & viewGeometry, long id, SketchWidget * dropOrigin)
 {
 	ItemBase * newItem = SketchWidget::placePartDroppedInOtherView(modelPart, viewLayerPlacement, viewGeometry, id, dropOrigin);
@@ -1319,58 +1342,83 @@ ItemBase * PCBSketchWidget::placePartDroppedInOtherView(ModelPart * modelPart, V
 	}
 
 	foreach (ItemBase * board, boards) {
+		// This is a 2d bin-packing problem.
+		if (!board) continue;
 
-		// This is a 2d bin-packing problem. We can use our tile datastructure for this.
-		// Use a simple best-fit approach for now.  No idea how optimal a solution it is.
-
-		CMRouter router(this, board, false);
+		auto boardRect = board->sceneBoundingRect();
 		int keepout = 10;
-		router.setKeepout(keepout);
-		Plane * plane = router.initPlane(false);
-		QList<Tile *> alreadyTiled;
+		int boardKeepout = 5;
+		rbp::GuillotineBinPack binPack(boardRect.width() - boardKeepout * 2, boardRect.height() - boardKeepout * 2);
 
-		foreach (QGraphicsItem * item, (board) ? scene()->collidingItems(board) : scene()->items()) {
+		std::map<std::string, ItemBase *> items;
+
+		QList<QGraphicsItem *> onBoard = getCollidingItems(board, newItem);
+		foreach (QGraphicsItem * item, onBoard) {
 			ItemBase * itemBase = dynamic_cast<ItemBase *>(item);
-			if (itemBase == NULL) continue;
-			if (!itemBase->isEverVisible()) continue;
-			if (itemBase->layerKinChief() != itemBase) continue;
-
-			if (itemBase->layerKinChief() == board) continue;
-			if (itemBase->layerKinChief() == newItem) continue;
-
-			Wire * wire = qobject_cast<Wire *>(itemBase);
-			if (wire) {
-				if (!wire->getTrace()) continue;
-				if (!wire->isTraceType(getTraceFlag())) continue;
-			}
-			else if (ResizableBoard::isBoard(itemBase)) continue;
-
-			// itemBase->debugInfo("tiling");
-			QRectF r = itemBase->sceneBoundingRect().adjusted(-keepout, -keepout, keepout, keepout);
-			router.insertTile(plane, r, alreadyTiled, NULL, Tile::OBSTACLE, CMRouter::IgnoreAllOverlaps);
+			QStringList keys;
+			auto properties = itemBase->prepareProps(itemBase->modelPart(), true, keys);
+			items[properties["id"].toStdString()] = itemBase;
 		}
 
-		BestPlace bestPlace;
-		bestPlace.maxRect = router.boardRect();
-		bestPlace.rotate90 = false;
-		bestPlace.width = realToTile(newItem->boundingRect().width());
-		bestPlace.height = realToTile(newItem->boundingRect().height());
-		bestPlace.plane = plane;
-
-		TiSrArea(NULL, plane, &bestPlace.maxRect, Panelizer::placeBestFit, &bestPlace);
-		if (bestPlace.bestTile) {
-			QRectF r;
-			tileToQRect(bestPlace.bestTile, r);
-			ItemBase * chief = newItem->layerKinChief();
-			chief->setPos(r.topLeft());
-			DebugDialog::debug(QString("placing part with rotation:%1").arg(bestPlace.rotate90), r);
-			if (bestPlace.rotate90) {
-				chief->rotateItem(90, false);
-			}
-			alignOneToGrid(newItem);
+		// Sort by id to make sure parts are always added in correct order for bin packing algorithm.
+		// This might not yet work well if parts are manually moved in the PCB view.
+		for (auto& [id, itemBase]: items) {
+			QRectF r = itemBase->sceneBoundingRect();
+			binPack.Insert(r.width() + keepout * 2, r.height() + keepout * 2, true, rbp::GuillotineBinPack::RectBestAreaFit, rbp::GuillotineBinPack::SplitMinimizeArea);
 		}
-		router.drcClean();
-		if (bestPlace.bestTile) {
+
+		auto newWidth = newItem->sceneBoundingRect().width() + keepout * 2;
+		auto newHeight = newItem->sceneBoundingRect().height() + keepout * 2;
+		rbp::Rect rect = binPack.Insert(newWidth, newHeight, true, rbp::GuillotineBinPack::RectBestAreaFit, rbp::GuillotineBinPack::SplitMinimizeArea);
+		rect.x += boardRect.x() + boardKeepout + keepout;
+		rect.y += boardRect.y() + boardKeepout + keepout;
+		bool rotated = false;
+		if (rect.height != 0) {
+			QRectF r(rect.x, rect.y, rect.width, rect.height);
+			ItemBase * kinChief = newItem->layerKinChief();
+			if (r.height() != newHeight && (r.width() - newHeight) < 0.01) {
+				kinChief->rotateItem(90, false);
+				auto rotationCorrection = (r.height() - r.width()) / 2;
+				r.setX(r.x() - rotationCorrection);
+				r.setY(r.y() + rotationCorrection);
+				rotated = true;
+			}
+			auto oldPos = kinChief->pos();
+			kinChief->setPos(r.topLeft());
+			QRectF r2 = r;
+			QList<QGraphicsItem *> onNewItem = getCollidingItems(newItem, board);
+			newItem->collidesWithItem(board);
+			board->sceneBoundingRect().contains(newItem->sceneBoundingRect());
+
+			QPointF dir(1, 0);
+			while (getCollidingItems(newItem, board).size() > 0) {
+				r.setX(r.x() + dir.x() * newWidth);
+				r.setY(r.y() + dir.y() * newHeight);
+				kinChief->setPos(r.topLeft());
+				if (!board->sceneBoundingRect().contains(newItem->sceneBoundingRect())) {
+					DebugDialog::debug(QString("change dir"));
+					r = r2;
+					kinChief->setPos(r.topLeft());
+					if (dir.x() > dir.y()) {
+						dir = QPointF(0, 1);
+					} else {
+						break;
+					}
+				}
+			}
+			if ((!board->sceneBoundingRect().contains(newItem->sceneBoundingRect())) || getCollidingItems(newItem, board).size() > 0) {
+				DebugDialog::debug(QString("reset because out of board"));
+				if (rotated) {
+					kinChief->rotateItem(-90, false);
+				}
+				kinChief->setPos(oldPos);
+				rect.height = 0;
+			} else {
+				alignOneToGrid(newItem);
+			}
+
+		}
+		if (rect.height != 0) {
 			break;
 		}
 	}
@@ -2215,7 +2263,7 @@ int PCBSketchWidget::selectAllItemType(ModelPart::ItemType itemType, const QStri
 	ItemBase * board = findSelectedBoard(boardCount);
 	if (boardCount == 0  && autorouteTypePCB()) {
 		QMessageBox::critical(this, tr("Fritzing"),
-		                      tr("Your sketch does not have a board yet!  Please add a PCB in order to use this selection operation."));
+		                      tr("Your sketch does not have a board yet!  Please add a PCB to use this selection operation."));
 		return 0;
 	}
 	if (board == NULL) {
@@ -2535,7 +2583,7 @@ QString PCBSketchWidget::makePasteMask(const QString & svgMask, ItemBase * board
 	foreach (QDomElement element, leaves) {
 		QString id = element.attribute("id");
 		QRectF bounds = renderer.boundsOnElement(id);
-		QRectF leafRect = renderer.matrixForElement(id).mapRect(bounds);
+		QRectF leafRect = renderer.transformForElement(id).mapRect(bounds);
 		QPointF leafCenter = leafRect.center();
 		foreach (QRectF r, connectorRects) {
 			if (!leafRect.intersects(r)) continue;
@@ -2712,7 +2760,7 @@ void PCBSketchWidget::fabQuote() {
 
 	m_quoteDialog->exec();
 	delete m_quoteDialog;
-	m_quoteDialog = NULL;
+	m_quoteDialog = nullptr;
 }
 
 void PCBSketchWidget::gotFabQuote(QNetworkReply * networkReply) {

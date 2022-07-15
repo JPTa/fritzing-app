@@ -365,7 +365,7 @@ void BinManager::setDirtyTab(PartsBinPaletteWidget* w, bool dirty) {
 		int tabIdx = m_stackTabWidget->indexOf(w);
 		m_stackTabWidget->setTabText(tabIdx, w->title()+(dirty? " *": ""));
 	} else {
-		qWarning() << tr("BinManager::setDirtyTab: Couldn't set the bin '%1' as dirty").arg(w->title());
+		qWarning() << QString("BinManager::setDirtyTab: Couldn't set the bin '%1' as dirty").arg(w->title());
 	}
 }
 
@@ -375,7 +375,7 @@ void BinManager::updateTitle(PartsBinPaletteWidget* w, const QString& newTitle) 
 		setDirtyTab(w);
 	}
 	else {
-		qWarning() << tr("BinManager::updateTitle: Couldn't set the bin '%1' as dirty").arg(w->title());
+		qWarning() << QString("BinManager::updateTitle: Couldn't set the bin '%1' as dirty").arg(w->title());
 	}
 }
 
@@ -488,7 +488,7 @@ void BinManager::currentChanged(int index) {
 
 void BinManager::setAsCurrentBin(PartsBinPaletteWidget* bin) {
 	if (bin == NULL) {
-		qWarning() << tr("Cannot set a NULL bin as the current one");
+		qWarning() << QString("Cannot set a NULL bin as the current one");
 		return;
 	}
 
@@ -1232,7 +1232,7 @@ bool BinManager::removeSelected() {
 
 	QMessageBox::StandardButton answer = QMessageBox::question(
 	        this,
-	        tr("Remove from bin"),
+			tr("Remove from Bin"),
 	        tr("Do you really want to remove '%1' from the bin? This operation cannot be undone.").arg(mp->title()),
 	        QMessageBox::Yes | QMessageBox::No,
 	        QMessageBox::No
@@ -1330,7 +1330,7 @@ void BinManager::mainLoad() {
 
 	QString fileName = FolderUtils::getOpenFileName(
 	                       this,
-	                       tr("Select a Fritzing File to Open"),
+						   tr("Select a Fritzing file to open"),
 	                       path,
 	                       tr("Fritzing Files (*%1 *%2 *%3);;Fritzing Part (*%1);;Fritzing Bin (*%2);;Fritzing Shareable Bin (*%3)")
 	                       .arg(FritzingBundledPartExtension)

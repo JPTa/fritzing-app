@@ -119,7 +119,11 @@ PaletteItem::PaletteItem( ModelPart * modelPart, ViewLayer::ViewID viewID, const
 {
 	m_flipCount = 0;
 	if(doLabel) {
-		m_partLabel = new PartLabel(this, NULL);
+		QWidget *parentWidget = NULL;
+		if (itemMenu) {
+			parentWidget = itemMenu->parentWidget();
+		}
+		m_partLabel = new PartLabel(this, parentWidget, NULL);
 		m_partLabel->setVisible(false);
 	} else {
 		m_partLabel = NULL;
@@ -683,7 +687,7 @@ QList<Connector *> PaletteItem::sortConnectors() {
 		sortedConnectors.append(connector);
 	}
 	ByIDParseSuccessful = true;
-	qSort(sortedConnectors.begin(), sortedConnectors.end(), byID);
+	std::sort(sortedConnectors.begin(), sortedConnectors.end(), byID);
 	if (!ByIDParseSuccessful || sortedConnectors.count() == 0) {
 		sortedConnectors.clear();
 	}

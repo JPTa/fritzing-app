@@ -34,14 +34,8 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include <QFileInfo>
 
 #include "../debugdialog.h"
-#ifdef QUAZIP_INSTALLED
-#include <quazip5/quazip.h>
-#include <quazip5/quazipfile.h>
-#else
-#include "../lib/quazip/quazip.h"
-#include "../lib/quazip/quazipfile.h"
-#endif
-#include "../lib/qtsysteminfo/QtSystemInfo.h"
+#include <quazip.h>
+#include <quazipfile.h>
 
 
 FolderUtils* FolderUtils::singleton = NULL;
@@ -762,7 +756,7 @@ void FolderUtils::createUserDataStoreFolders() {
 		FMessageBox::information(NULL, QCoreApplication::translate("FolderUtils", "Moving your custom parts"),
 		                         QCoreApplication::translate("FolderUtils", "<p>Your custom-made parts and bins are moved from the hidden "
 		                                 "app data folder to your fritzing documents folder at <br/><br/><em>%1</em><br/><br/>"
-		                                 "This way we hope to make it easier for you to find and edit them manually.</p>")
+		                                 "This way, we hope to make it easier for you to find and edit them manually.</p>")
 		                         .arg(documents.absolutePath()));
 
 		// copy these into the new locations

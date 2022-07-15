@@ -43,7 +43,7 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 QSet<QString> InstalledFonts::InstalledFontsList;
 QMultiHash<QString, QString> InstalledFonts::InstalledFontsNameMapper;   // family name to filename; SVG files seem to have to use filename
 
-const QString TextUtils::CreatedWithFritzingString("Created with Fritzing (http://www.fritzing.org/)");
+const QString TextUtils::CreatedWithFritzingString("Created with Fritzing (https://fritzing.org/)");
 const QString TextUtils::CreatedWithFritzingXmlComment("<!-- " + CreatedWithFritzingString + " -->\n");
 
 const QRegExp TextUtils::FindWhitespace("[\\s]+");
@@ -602,6 +602,11 @@ void TextUtils::setSVGTransform(QDomElement & element, QMatrix & matrix)
 	element.setAttribute("transform", svgMatrix(matrix));
 }
 
+void TextUtils::setSVGTransform(QDomElement & element, QTransform & matrix)
+{
+	element.setAttribute("transform", svgMatrix(matrix));
+}
+
 QString TextUtils::svgTransform(const QString & svg, QTransform & transform, bool translate, const QString extras) {
 	if (transform.isIdentity()) return svg;
 
@@ -612,8 +617,9 @@ QString TextUtils::svgTransform(const QString & svg, QTransform & transform, boo
 	       .arg(transform.m22())
 	       .arg(translate ? transform.dx() : 0.0)
 	       .arg(translate ? transform.dy() : 0.0)
-	       .arg(svg)
-	       .arg(extras);
+	       .arg(svg
+	     		,extras
+	       );
 }
 
 bool TextUtils::getSvgSizes(QDomDocument & doc, double & sWidth, double & sHeight, double & vbWidth, double & vbHeight)
@@ -800,17 +806,19 @@ bool TextUtils::addCopper1(const QString & filename, QDomDocument & domDocument,
 
 }
 
-QString TextUtils::convertToPowerPrefix(double q) {
+QString TextUtils::convertToPowerPrefix(double q, char format, int precision) {
 	initPowerPrefixes();
 
+	if (q == 0) return QString::number(q, format, precision);
+
 	for (int i = 0; i < PowerPrefixes.count(); i++) {
-		if (q < 100 * PowerPrefixValues[i]) {
+		if (abs(q) < 100 * PowerPrefixValues[i]) {
 			q /= PowerPrefixValues[i];
-			return QString::number(q) + PowerPrefixes[i];
+			return QString::number(q, format, precision) + PowerPrefixes[i];
 		}
 	}
 
-	return QString::number(q);
+	return QString::number(q, format, precision);
 }
 
 double TextUtils::convertFromPowerPrefixU(QString & val, const QString & symbol)
@@ -919,6 +927,49 @@ QMatrix TextUtils::transformStringToMatrix(const QString & transform) {
 	}
 
 	return QMatrix();
+}
+
+QTransform TextUtils::elementToTransform(QDomElement & element) {
+	QString transform = element.attribute("transform");
+	if (transform.isEmpty()) return QTransform();
+
+	return transformStringToTransform(transform);
+}
+
+QTransform TextUtils::transformStringToTransform(const QString & transform) {
+	// doesn't handle multiple transform attributes
+	QList<double> floats = getTransformFloats(transform);
+
+	if (transform.startsWith("translate")) {
+		return QTransform().translate(floats[0], (floats.length() > 1) ? floats[1] : 0);
+	}
+	else if (transform.startsWith("rotate")) {
+		if (floats.length() == 1) {
+			return QTransform().rotate(floats[0]);
+		}
+		else if (floats.length() == 3) {
+			return  QTransform().translate(-floats[1], -floats[2]) * QTransform().rotate(floats[0]) * QTransform().translate(floats[1], floats[2]);
+		}
+	}
+	else if (transform.startsWith("matrix")) {
+		return QTransform(floats[0], floats[1], floats[2], floats[3], floats[4], floats[5]);
+	}
+	else if (transform.startsWith("scale")) {
+		if (floats.size() == 2) {
+			return QTransform().scale(floats[0], floats[1]);
+		} else {
+			Q_ASSERT(floats.size() == 1);
+			return QTransform().scale(floats[0], floats[0]);
+		}
+	}
+	else if (transform.startsWith("skewX")) {
+		return QTransform().shear(floats[0], 0);
+	}
+	else if (transform.startsWith("skewY")) {
+		return QTransform().shear(0, floats[0]);
+	}
+
+	return QTransform();
 }
 
 QList<double> TextUtils::getTransformFloats(QDomElement & element) {
@@ -1087,7 +1138,7 @@ bool TextUtils::fixViewBox(QDomElement & root) {
 	double y = coords.at(1).toDouble(&ok);
 	if (!ok) return false;
 
-	QString newValue = QString("0 0 %1 %2").arg(coords[2]).arg(coords[3]);
+	QString newValue = QString("0 0 %1 %2").arg(coords[2], coords[3]);
 	root.setAttribute("viewBox", newValue);
 
 	QDomElement transformElement = root.ownerDocument().createElement("g");
@@ -1444,8 +1495,8 @@ QString TextUtils::makeLineSVG(QPointF p1, QPointF p2, double width, QString col
 	       .arg(p2.x())
 	       .arg(p2.y())
 	       .arg(width * dpi / printerScale)
-	       .arg(stroke)
-	       .arg(dash)
+		   .arg(stroke
+		   ,dash)
 	       ;
 }
 
@@ -1667,6 +1718,44 @@ QString TextUtils::parseForModuleID(const QString & fzpXmlString)
 
 	return "";
 }
+
+QMap<QString, QString> TextUtils::parseFileForViewImages(const QString & fzpPath)
+{
+	QMap<QString, QString> map;
+	QFile file(fzpPath);
+	if (!file.open(QFile::ReadOnly)) return map;
+
+	QXmlStreamReader streamReader(&file);
+	streamReader.setNamespaceProcessing(false);
+	QString view;
+	while (!streamReader.atEnd()) {
+		switch (streamReader.readNext()) {
+		case QXmlStreamReader::StartElement:
+			if (streamReader.name().toString().compare("iconView") == 0) {
+				view = "icon";
+			}
+			if (streamReader.name().toString().compare("breadboardView") == 0) {
+				view = "breadboard";
+			}
+			if (streamReader.name().toString().compare("pcbView") == 0) {
+				view = "pcb";
+			}
+			if (streamReader.name().toString().compare("schematicView") == 0) {
+				view = "schematic";
+			}
+			if (streamReader.name().toString().compare("layers") == 0) {
+				map[view] = streamReader.attributes().value("image").toString();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	file.close();
+	return map;
+}
+
 
 QString TextUtils::parseFileForModuleID(const QString & fzpPath)
 {
@@ -1950,7 +2039,7 @@ QString TextUtils::elementToString(const QDomElement & element) {
 	QDomNamedNodeMap attributes = element.attributes();
 	for (int i = 0; i < attributes.count(); i++) {
 		QDomNode attribute = attributes.item(i);
-		string += QString(" %1='%2'").arg(attribute.nodeName()).arg(attribute.nodeValue());
+		string += QString(" %1='%2'").arg(attribute.nodeName(), attribute.nodeValue());
 	}
 	string +="/>";
 	return string;

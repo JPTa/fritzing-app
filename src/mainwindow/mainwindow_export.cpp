@@ -55,6 +55,7 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "../version/version.h"
 #include "../help/tipsandtricks.h"
 #include "../dialogs/setcolordialog.h"
+#include "../dialogs/exportparametersdialog.h"
 #include "../utils/folderutils.h"
 #include "../utils/graphicsutils.h"
 #include "../utils/textutils.h"
@@ -66,6 +67,7 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "../utils/autoclosemessagebox.h"
 #include "../svg/gerbergenerator.h"
 #include "../processeventblocker.h"
+#include "../items/propertydef.h"
 
 static QString eagleActionType = ".eagle";
 static QString gerberActionType = ".gerber";
@@ -315,9 +317,10 @@ void MainWindow::exportEtchable(bool wantPDF, bool wantSVG)
 				double trueHeight = boardImageSize.height() / GraphicsUtils::SVGDPI;
 				QRectF target(0, 0, trueWidth * res, trueHeight * res);
 
-				QSizeF psize((target.width() + printer.paperRect().width() - printer.width()) / res,
-				             (target.height() + printer.paperRect().height() - printer.height()) / res);
-				printer.setPaperSize(psize, QPrinter::Inch);
+				QSizeF psize((target.width() + printer.pageLayout().fullRectPixels(printer.resolution()).width() - printer.width()) / res,
+				             (target.height() + printer.pageLayout().fullRectPixels(printer.resolution()).height() - printer.height()) / res);
+				QPageSize pageSize(psize, QPageSize::Inch);
+				printer.setPageSize(pageSize);
 
 				QPainter painter;
 				if (painter.begin(&printer))
@@ -557,77 +560,39 @@ void MainWindow::exportAux(QString fileName, QImage::Format format, int quality,
 {
 	if (m_currentGraphicsView == NULL) return;
 
-	//Deselect all the items that are selected before creating the image
-	QList<QGraphicsItem*> selItems = m_currentGraphicsView->scene()->selectedItems();
-	foreach(QGraphicsItem *item, selItems) {
-		item->setSelected(false);
-	}
+        int dpi = 3 * GraphicsUtils::SVGDPI;
 
-	double resMultiplier = 3;
+        ExportParametersDialog parameters(dpi, this);
+        parameters.setValue(dpi);
+        int parametersResult = parameters.exec();
+        if ( parametersResult == QDialog::Rejected )
+        {
+                return;
+        }
+        dpi = parameters.getDpi();
 
-	QRectF itemsBoundingRect;
-	foreach(QGraphicsItem *item,  m_currentGraphicsView->scene()->items()) {
-		if (!item->isVisible()) continue;
+	QRectF source = prepareExport(removeBackground);
 
-		item->update();
-		itemsBoundingRect |= item->sceneBoundingRect();
-	}
+	double resMultiplier = dpi / GraphicsUtils::SVGDPI;
 
-	QRectF source = itemsBoundingRect;  // m_currentGraphicsView->scene()->itemsBoundingRect();
-	QGraphicsItem * watermark = m_currentGraphicsView->addWatermark(":resources/images/watermark_fritzing_outline.svg");
-	if (watermark) {
-		watermark->setPos(source.right() - watermark->boundingRect().width(), source.bottom());
-		source.adjust(0, 0, 0, watermark->boundingRect().height());
-	}
-
-	int width = source.width();
-	int height = source.height();
-
-	/*
-	int width = m_currentGraphicsView->width();
-	if (m_currentGraphicsView->verticalScrollBar()->isVisible()) {
-		width -= m_currentGraphicsView->verticalScrollBar()->width();
-	}
-	int height = m_currentGraphicsView->height();
-	if (m_currentGraphicsView->horizontalScrollBar()->isVisible()) {
-		height -= m_currentGraphicsView->horizontalScrollBar()->height();
-	}
-	*/
-
-	QSize imgSize(width * resMultiplier, height * resMultiplier);
-	QImage image(imgSize,format);
-	image.setDotsPerMeterX(InchesPerMeter * GraphicsUtils::SVGDPI * resMultiplier);
-	image.setDotsPerMeterY(InchesPerMeter * GraphicsUtils::SVGDPI * resMultiplier);
-	QPainter painter;
-	QColor color;
+	QSize imgSize(source.width() * resMultiplier, source.height() * resMultiplier);
+	QImage image(imgSize, format);
+	image.setDotsPerMeterX(InchesPerMeter * dpi);
+	image.setDotsPerMeterY(InchesPerMeter * dpi);
 	if (removeBackground) {
-		color = m_currentGraphicsView->background();
-		m_currentGraphicsView->setBackground(QColor::fromRgb(255,255,255,255));
 		image.fill(QColor::fromRgb(255,255,255,255));
 	} else {
 		image.fill(m_currentGraphicsView->background());
 	}
 
+	QPainter painter;
 	painter.begin(&image);
-	//m_currentGraphicsView->render(&painter);
 	QRectF target(0, 0, imgSize.width(), imgSize.height());
+	transformPainter(painter, target.width());
 	m_currentGraphicsView->scene()->render(&painter, target, source, Qt::KeepAspectRatio);
 	painter.end();
 
-	//image.save(FolderUtils::getUserDataStorePath("") + "/export.png");
-
-	//Select the items that were selected
-	foreach(QGraphicsItem *item, selItems) {
-		item->setSelected(true);
-	}
-
-	if (removeBackground) {
-		m_currentGraphicsView->setBackground(color);
-	}
-
-	if (watermark) {
-		delete watermark;
-	}
+	afterExport(removeBackground);
 
 	QImageWriter imageWriter(fileName);
 	if (imageWriter.supportsOption(QImageIOHandler::Description)) {
@@ -648,60 +613,31 @@ void MainWindow::printAux(QPrinter &printer, bool removeBackground, bool paginat
 	DebugDialog::debug(QString("p.w:%1 p.h:%2 pager.w:%3 pager.h:%4 paperr.w:%5 paperr.h:%6 source.w:%7 source.h:%8")
 	                   .arg(printer.width())
 	                   .arg(printer.height())
-	                   .arg(printer.pageRect().width())
-	                   .arg(printer.pageRect().height())
-	                   .arg(printer.paperRect().width())
-	                   .arg(printer.paperRect().height())
+	                   .arg(printer.pageLayout().paintRectPixels(printer.resolution()).width())
+	                   .arg(printer.pageLayout().paintRectPixels(printer.resolution()).height())
+	                   .arg(printer.pageLayout().fullRectPixels(printer.resolution()).width())
+	                   .arg(printer.pageLayout().fullRectPixels(printer.resolution()).height())
 	                   .arg(printer.width() / scale2)
 	                   .arg(printer.height() / scale2) );
 
-	// oSceneStart oSceneEnd: shows only what's visible in the viewport, not the entire view
-	//QPointF oSceneStart = m_currentGraphicsView->mapToScene(QPoint(0,0));
-	//QPointF oSceneEnd = m_currentGraphicsView->mapToScene(QPoint(m_currentGraphicsView->viewport()->width(), m_currentGraphicsView->viewport()->height()));
-	//QRectF source(oSceneStart, oSceneEnd);
-
-	QRectF itemsBoundingRect;
-	foreach(QGraphicsItem *item,  m_currentGraphicsView->scene()->items()) {
-		if (!item->isVisible()) continue;
-
-		itemsBoundingRect |= item->sceneBoundingRect();
-	}
-
-	QRectF source = itemsBoundingRect;  // m_currentGraphicsView->scene()->itemsBoundingRect();
+	QRectF source = prepareExport(removeBackground);
 	DebugDialog::debug("items bounding rect", source);
 	DebugDialog::debug("scene items bounding rect", m_currentGraphicsView->scene()->itemsBoundingRect());
-	QGraphicsItem * watermark = m_currentGraphicsView->addWatermark(":resources/images/watermark_fritzing_outline.svg");
-	if (watermark) {
-		watermark->setPos(source.right() - watermark->boundingRect().width(), source.bottom());
-		source.adjust(0, 0, 0, watermark->boundingRect().height());
-	}
 
 	QRectF target(0, 0, source.width() * scale2, source.height() * scale2);
 
 	if (!paginate) {
-		QSizeF psize((target.width() + printer.paperRect().width() - printer.width()) / res,
-		             (target.height() + printer.paperRect().height() - printer.height()) / res);
-		printer.setPaperSize(psize, QPrinter::Inch);
+		QSizeF psize((target.width() + printer.pageLayout().fullRectPixels(printer.resolution()).width() - printer.width()) / res,
+		             (target.height() + printer.pageLayout().fullRectPixels(printer.resolution()).height() - printer.height()) / res);
+		QPageSize pageSize(psize, QPageSize::Inch);
+		printer.setPageSize(pageSize);
 	}
 
 	QPainter painter;
 	if (!painter.begin(&printer)) {
-		if (watermark) {
-			delete watermark;
-		}
+		afterExport(removeBackground);
 		QMessageBox::warning(this, tr("Fritzing"), tr("Cannot print to %1").arg(printer.docName()));
 		return;
-	}
-
-	QColor color;
-	if(removeBackground) {
-		color = m_currentGraphicsView->background();
-		m_currentGraphicsView->setBackground(QColor::fromRgb(255,255,255,255));
-	}
-
-	QList<QGraphicsItem*> selItems = m_currentGraphicsView->scene()->selectedItems();
-	foreach(QGraphicsItem *item, selItems) {
-		item->setSelected(false);
 	}
 
 	if (paginate) {
@@ -721,6 +657,7 @@ void MainWindow::printAux(QPrinter &printer, bool removeBackground, bool paginat
 				               qMin(xSourcePage, (int) source.width() - (ix * xSourcePage)),
 				               qMin(ySourcePage, (int) source.height() - (iy * ySourcePage)));
 				QRectF pTarget(0, 0, pSource.width() * scale2, pSource.height() * scale2);
+				transformPainter(painter, pTarget.width());
 				m_currentGraphicsView->scene()->render(&painter, pTarget, pSource, Qt::KeepAspectRatio);
 				if (++page < lastPage) {
 					printer.newPage();
@@ -729,20 +666,11 @@ void MainWindow::printAux(QPrinter &printer, bool removeBackground, bool paginat
 		}
 	}
 	else {
+		transformPainter(painter, target.width());
 		m_currentGraphicsView->scene()->render(&painter, target, source, Qt::KeepAspectRatio);
 	}
 
-	foreach(QGraphicsItem *item, selItems) {
-		item->setSelected(true);
-	}
-
-	if(removeBackground) {
-		m_currentGraphicsView->setBackground(color);
-	}
-
-	if (watermark) {
-		delete watermark;
-	}
+	afterExport(removeBackground);
 
 	DebugDialog::debug(QString("source w:%1 h:%2 target w:%5 h:%6 pres:%3 screenres:%4")
 	                   .arg(source.width())
@@ -772,6 +700,71 @@ void MainWindow::printAux(QPrinter &printer, bool removeBackground, bool paginat
 	//#endif
 
 }
+
+void MainWindow::transformPainter(QPainter &painter, qreal width)
+{
+	if(m_currentGraphicsView->viewFromBelow()) {
+	// m_currentGraphicsView->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+		QTransform transform;
+		transform.translate(width, 0.0);
+		transform.scale(-1, 1);
+		painter.setTransform(transform, true);
+	}
+}
+
+QRectF MainWindow::prepareExport(bool removeBackground)
+{
+	//Deselect all the items that are selected before creating the image
+	m_selectedItems = m_currentGraphicsView->scene()->selectedItems();
+	foreach(QGraphicsItem *item, m_selectedItems) {
+		item->setSelected(false);
+	}
+
+	QRectF itemsBoundingRect;
+	foreach(QGraphicsItem *item,  m_currentGraphicsView->scene()->items()) {
+		if (!item->isVisible()) continue;
+
+		item->update();
+		itemsBoundingRect |= item->sceneBoundingRect();
+	}
+
+	QRectF source = itemsBoundingRect;
+	m_watermark = m_currentGraphicsView->addWatermark(":resources/images/watermark_fritzing_outline.svg");
+	if (m_watermark) {
+		m_watermark->setPos(source.right() - m_watermark->boundingRect().width(), source.bottom());
+		if(m_currentGraphicsView->viewFromBelow()) {
+			QTransform transformScale;
+			transformScale.scale(-1, 1);
+			m_watermark->setTransformOriginPoint((m_watermark->boundingRect().left() + m_watermark->boundingRect().right()) / 2, m_watermark->y());
+			m_watermark->setTransform(transformScale, true);
+			m_watermark->setPos(source.left() + m_watermark->boundingRect().width(), source.bottom());
+		}
+		source.adjust(0, 0, 0, m_watermark->boundingRect().height());
+	}
+
+	if(removeBackground) {
+		m_bgColor = m_currentGraphicsView->background();
+		m_currentGraphicsView->setBackground(QColor::fromRgb(255,255,255,255));
+	}
+
+	return source;
+}
+
+void MainWindow::afterExport(bool removeBackground)
+{
+	foreach(QGraphicsItem *item, m_selectedItems) {
+		item->setSelected(true);
+	}
+
+	if (removeBackground) {
+		m_currentGraphicsView->setBackground(m_bgColor);
+	}
+
+	if (m_watermark) {
+		delete m_watermark;
+	}
+}
+
 
 bool MainWindow::saveAsAux(const QString & fileName) {
 	QFile file(fileName);
@@ -1218,8 +1211,9 @@ void MainWindow::exportBOM() {
 
 	foreach (ItemBase * itemBase, partList) {
 		if (itemBase->itemType() != ModelPart::Part) continue;
-
-		QString desc = itemBase->title() + "%%%%%" + getBomProps(itemBase);  // keeps different parts separate if there are no properties
+		QStringList keys;
+		QHash<QString, QString> properties = HtmlInfoView::getPartProperties(itemBase->modelPart(), itemBase, false, keys);
+		QString desc = itemBase->prop("mn") + "%%%%%" + itemBase->prop("mpn") + "%%%%%" + itemBase->title() + "%%%%%" + getBomProps(itemBase);  // keeps different parts separate if there are no properties
 		descrs.insert(desc, itemBase);
 		if (!descrList.contains(desc)) {
 			descrList.append(desc);
@@ -1229,15 +1223,16 @@ void MainWindow::exportBOM() {
 	QString assemblyString;
 	foreach (ItemBase * itemBase, partList) {
 		if (itemBase->itemType() != ModelPart::Part) continue;
-
-		assemblyString += bomRowTemplate.arg(itemBase->instanceTitle()).arg(itemBase->title()).arg(getBomProps(itemBase));
+		QStringList keys;
+		QHash<QString, QString> properties = HtmlInfoView::getPartProperties(itemBase->modelPart(), itemBase, false, keys);
+		assemblyString += bomRowTemplate.arg(itemBase->instanceTitle()).arg(itemBase->prop("mn")).arg(itemBase->prop("mpn")).arg(itemBase->title()).arg(getBomProps(itemBase));
 	}
 
 	QString shoppingListString;
 	foreach (QString descr, descrList) {
 		QList<ItemBase *> itemBases = descrs.values(descr);
 		QStringList split = descr.split("%%%%%");
-		shoppingListString += bomRowTemplate.arg(itemBases.count()).arg(split.at(0)).arg(split.at(1));
+		shoppingListString += bomRowTemplate.arg(itemBases.count()).arg(split.at(0)).arg(split.at(1)).arg(split.at(2)).arg(split.at(3));
 	}
 
 	QString bom = bomTemplate
@@ -1314,19 +1309,55 @@ void MainWindow::exportSpiceNetlist() {
 		return; //Cancel pressed
 	}
 
-	static QRegExp curlies("\\{([^\\}]*)\\}");
-
 	QFileInfo fileInfo(m_fwFilename);
-	QString output = fileInfo.completeBaseName();
-	output += "\n";
+	QString spiceNetlist = getSpiceNetlist(fileInfo.completeBaseName());
+	//DebugDialog::debug(fileExt + " selected to export");
+	if(!alreadyHasExtension(fileName, spiceNetlistActionType)) {
+		fileName += spiceNetlistActionType;
+	}
 
-	QHash<ConnectorItem *, int> indexer;
+	TextUtils::writeUtf8(fileName, spiceNetlist);
+}
+
+/**
+ * Build and return a circuit description in spice based on the current circuit.
+ *
+ * Excludes parts that are not connected to other parts.
+ * @brief Create a circuit description in spice
+ * @param[in] simulationName Name of the simulation to be included in the first line of output
+ * @return A string that is a circuit description in spice
+ */
+QString MainWindow::getSpiceNetlist(QString simulationName) {
 	QList< QList<ConnectorItem *>* > netList;
+	QSet<ItemBase *> itemBases;
+	QString spiceNetlist = getSpiceNetlist(simulationName, netList, itemBases);
+	foreach (QList<ConnectorItem *> * net, netList) {
+		delete net;
+	}
+	netList.clear();
+	return spiceNetlist;
+}
+
+/**
+ * Build and return a circuit description in spice based on the current circuit.
+ * Additionally, the netlist and the parts to simulate are returned by pointers.
+ *
+ * Excludes parts that are not connected to other parts.
+ * @brief Create a circuit description in spice
+ * @param[in] simulationName Name of the simulation to be included in the first line of output
+ * @param[out] netList A list with all the nets of the circuit that are going to be simulated and each net is a list of the connectors that belong to that net
+ * @param[out] itemBases A set with the parts that are going to be simulated
+ * @return A string that is a circuit description in spice
+ */
+QString MainWindow::getSpiceNetlist(QString simulationName, QList< QList<class ConnectorItem *>* >& netList, QSet<class ItemBase *>& itemBases) {
+	QString output = simulationName + "\n";
+	static QRegExp curlies("\\{([^\\{\\}]*)\\}");
+	QHash<ConnectorItem *, int> indexer;
 	this->m_schematicGraphicsView->collectAllNets(indexer, netList, true, false);
 
 
 	//DebugDialog::debug("_______________");
-	QSet<ItemBase *> itemBases;
+
 	QList<ConnectorItem *> * ground = NULL;
 	foreach (QList<ConnectorItem *> * net, netList) {
 		if (net->count() < 2) continue;
@@ -1336,20 +1367,41 @@ void MainWindow::exportSpiceNetlist() {
 			if (ci->isGrounded()) {
 				ground = net;
 			}
-			itemBases.insert(ci->attachedTo());
+			if (!ci->attachedTo()->spice().isEmpty())
+				itemBases.insert(ci->attachedTo());
 		}
 		//DebugDialog::debug("_______________");
 	}
 
+	//If the circuit is built in the BB view, there is no ground. Then, try to find a negative terminal from a power supply as ground
+	if (!ground){
+		DebugDialog::debug("Netlist exporter: Trying to identify the negative connection of a power supply as ground");
+		foreach (QList<ConnectorItem *> * net, netList) {
+			if (ground) break;
+			if (net->count() < 2) continue;
+			foreach (ConnectorItem * ci, *net) {
+				if (ci->connectorSharedName().compare("-", Qt::CaseInsensitive) == 0) {
+					ground = net;
+					break;
+				}
+			}
+		}
+	}
+
 	if (ground) {
+		DebugDialog::debug("Netlist exporter: ground found");
 		// make sure ground is index zero
 		netList.removeOne(ground);
 		netList.prepend(ground);
+	} else {
+		if (netList.count() > 0) {
+			DebugDialog::debug("Netlist exporter: ground NOT found. The ground has been connected to the following connectors");
+			ground = netList.at(0);
+			foreach (ConnectorItem * connector, * ground) {
+				connector->debugInfo("ground set in: ");
+			}
+		}
 	}
-
-	//DebugDialog::debug("_______________");
-	//DebugDialog::debug("_______________");
-	DebugDialog::debug("_______________");
 
 	foreach (QList<ConnectorItem *> * net, netList) {
 		if (net->count() < 2) continue;
@@ -1357,7 +1409,6 @@ void MainWindow::exportSpiceNetlist() {
 		foreach (ConnectorItem * ci, *net) {
 			ci->debugInfo("net");
 		}
-
 		DebugDialog::debug("_______________");
 	}
 
@@ -1367,9 +1418,9 @@ void MainWindow::exportSpiceNetlist() {
 	foreach (ItemBase * itemBase, itemBases) {
 		QString spice = itemBase->spice();
 		if (spice.isEmpty()) continue;
-
+		int pos = 0;
 		while (true) {
-			int ix = curlies.indexIn(spice);
+			int ix = curlies.indexIn(spice, pos);
 			if (ix < 0) break;
 
 			QString token = curlies.cap(1).toLower();
@@ -1398,13 +1449,38 @@ void MainWindow::exportSpiceNetlist() {
 				}
 			}
 			else {
+				//Find the symbol of this property
+				QString symbol;
+				QHash<PropertyDef *, QString> propertyDefs;
+				PropertyDefMaster::initPropertyDefs(itemBase->modelPart(), propertyDefs);
+				foreach (PropertyDef * propertyDef, propertyDefs.keys()) {
+					if (token.compare(propertyDef->name, Qt::CaseInsensitive) == 0) {
+						symbol = propertyDef->symbol;
+						break;
+					}
+				}
+				//Find the value of the property
 				QVariant variant = itemBase->modelPart()->localProp(token);
 				if (variant.isNull()) {
 					replacement = itemBase->modelPart()->properties().value(token, "");
+					if(replacement.isEmpty()) {
+						//Leave it, probably is a brace expresion for the spice simulator
+						pos = ix + 1;
+						replacement = curlies.cap(0);
+						continue;
+					}
 				}
 				else {
 					replacement = variant.toString();
 				}
+				//Remove the symbol, if any. It is not mandatory:
+				//(Ngspice ignores letters immediately following a number that are not scale factors)
+				if (!symbol.isEmpty()) {
+					replacement.replace(symbol, "");
+				}
+				//Ngspice does not differenciate from m and M prefixes, u shuld be used for micro
+				replacement.replace("M", "Meg");
+				replacement.replace(TextUtils::MicroSymbol, "u");
 			}
 
 			spice.replace(ix, curlies.cap(0).count(), replacement);
@@ -1474,26 +1550,18 @@ void MainWindow::exportSpiceNetlist() {
 		output = output2;
 	}
 
-	output += ".TRAN 1ms 100ms\n";
+	output += ".options savecurrents\n";
+	output += ".OP\n";
+	output += "*.TRAN 1ms 100ms\n";
 	output += "* .AC DEC 100 100 1MEG\n";
-	output += ".END\n";
-
-	foreach (QList<ConnectorItem *> * net, netList) {
-		delete net;
-	}
-	netList.clear();
+	output += ".END";
 
 	QClipboard *clipboard = QApplication::clipboard();
 	if (clipboard) {
 		clipboard->setText(output);
 	}
 
-	//DebugDialog::debug(fileExt + " selected to export");
-	if(!alreadyHasExtension(fileName, spiceNetlistActionType)) {
-		fileName += spiceNetlistActionType;
-	}
-
-	TextUtils::writeUtf8(fileName, output);
+	return output;
 }
 
 void MainWindow::exportNetlist() {

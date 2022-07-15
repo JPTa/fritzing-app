@@ -147,6 +147,9 @@ ItemBase::~ItemBase() {
 		delete m_fsvgRenderer;
 	}
 
+	//m_simItem is a child of this object, it gets delated by the destructor
+	m_simItem = nullptr;
+
 }
 
 void ItemBase::setTooltip() {
@@ -168,7 +171,10 @@ void ItemBase::removeTooltip() {
 
 bool ItemBase::zLessThan(ItemBase * & p1, ItemBase * & p2)
 {
-	return p1->z() < p2->z();
+	if(p1->viewLayerID() == p2->viewLayerID())
+		return p1->z() < p2->z();
+	else
+		return p1->viewLayerID() < p2->viewLayerID();
 }
 
 qint64 ItemBase::getNextID() {
@@ -253,6 +259,8 @@ void ItemBase::initNames() {
 		TranslatedPropertyNames.insert("copper top", tr("copper top"));
 		TranslatedPropertyNames.insert("silkscreen bottom", tr("silkscreen bottom"));
 		TranslatedPropertyNames.insert("silkscreen top", tr("silkscreen top"));
+		TranslatedPropertyNames.insert("mn", tr("mn"));
+		TranslatedPropertyNames.insert("mpn", tr("mpn"));
 
 		// TODO: translate more known property names from fzp files and resource xml files
 
@@ -2224,14 +2232,16 @@ QHash<QString, QString> ItemBase::prepareProps(ModelPart * modelPart, bool wantD
 
 	// ensure part number  is last
 	QString partNumber = props.value(ModelPartShared::PartNumberPropertyName, "").toLower();
-	keys.removeOne(ModelPartShared::PartNumberPropertyName);
+	for (auto&& propertyName : {ModelPartShared::MNPropertyName, ModelPartShared::MPNPropertyName, ModelPartShared::PartNumberPropertyName}) {
+		keys.removeOne(propertyName);
+	}
 
 	if (wantDebug) {
 		props.insert("id", QString("%1 %2 %3")
-		             .arg(QString::number(id()))
-		             .arg(modelPart->moduleID())
-		             .arg(ViewLayer::viewLayerNameFromID(viewLayerID()))
-		            );
+			.arg(QString::number(id())
+			,modelPart->moduleID()
+			,ViewLayer::viewLayerNameFromID(viewLayerID()))
+		);
 		keys.insert(1, "id");
 
 		int insertAt = 2;
@@ -2251,7 +2261,9 @@ QHash<QString, QString> ItemBase::prepareProps(ModelPart * modelPart, bool wantD
 
 	// ensure part number is last
 	if (hasPartNumberProperty()) {
-		keys.append(ModelPartShared::PartNumberPropertyName);
+		for (auto&& propertyName : {ModelPartShared::MNPropertyName, ModelPartShared::MPNPropertyName, ModelPartShared::PartNumberPropertyName}) {
+			keys.append(propertyName);
+		}
 	}
 
 	return props;
@@ -2363,4 +2375,17 @@ void ItemBase::setInspectorTitle(const QString & oldText, const QString & newTex
 
 	DebugDialog::debug(QString("set instance title to %1").arg(newText));
 	infoGraphicsView->setInstanceTitle(id(), oldText, newText, true, false);
+}
+
+void ItemBase::addSimulationGraphicsItem(QGraphicsObject * item) {
+	if (m_simItem)
+		delete m_simItem;
+	m_simItem = item;
+}
+
+void ItemBase::removeSimulationGraphicsItem() {
+	if (m_simItem) {
+		delete m_simItem;
+		m_simItem = nullptr;
+	}
 }

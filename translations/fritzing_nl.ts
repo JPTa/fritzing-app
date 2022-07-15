@@ -41,7 +41,7 @@
     </message>
     <message>
         <source>Special thanks goes out to: </source>
-        <translation>Met speciale dank aan:</translation>
+        <translation type="vanished">Met speciale dank aan:</translation>
     </message>
     <message>
         <source>Jussi &amp;Auml;ngeslev&amp;auml;, Massimo Banzi, Ayah Bdeir, </source>
@@ -69,31 +69,31 @@
     </message>
     <message>
         <source>Fritzing is made possible with funding from the </source>
-        <translation>Fritzing is mogelijk gemaakt door financiering van de </translation>
+        <translation type="vanished">Fritzing is mogelijk gemaakt door financiering van de </translation>
     </message>
     <message>
         <source>MWFK Brandenburg, the sponsorship of the Design </source>
-        <translation>MWFK Brandenburg, sponsoring van de Design </translation>
+        <translation type="vanished">MWFK Brandenburg, sponsoring van de Design </translation>
     </message>
     <message>
         <source>Department of Bauhaus-University Weimar, </source>
-        <translation>afdeling van de Bauhaus Universiteit Weimar, </translation>
+        <translation type="vanished">afdeling van de Bauhaus Universiteit Weimar, </translation>
     </message>
     <message>
         <source>IxDS, an anonymous donor, Parallax, Picaxe, Sparkfun, </source>
-        <translation>IxDS, een anonieme gever, Parallax, Picaxe, Sparkfun, </translation>
+        <translation type="vanished">IxDS, een anonieme gever, Parallax, Picaxe, Sparkfun, </translation>
     </message>
     <message>
         <source>Special thanks goes out as well to all the students </source>
-        <translation>Speciale dank gaat ook uit naar alle studenten </translation>
+        <translation type="vanished">Speciale dank gaat ook uit naar alle studenten </translation>
     </message>
     <message>
         <source>and alpha testers who were brave enough to give </source>
-        <translation>en alpha testers, welke moedig genoeg waren om </translation>
+        <translation type="vanished">en alpha testers, welke moedig genoeg waren om </translation>
     </message>
     <message>
         <source>Fritzing a test spin. </source>
-        <translation>Fritzing te testen.</translation>
+        <translation type="vanished">Fritzing te testen.</translation>
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</source>
@@ -101,7 +101,7 @@
     </message>
     <message>
         <source>and from each purchase of a Fritzing Starter Kit or a PCB from Fritzing Fab.</source>
-        <translation>en van elke aankoop van een Fritzing Starter Kit of een PCB van Fritzing Fab.</translation>
+        <translation type="vanished">en van elke aankoop van een Fritzing Starter Kit of een PCB van Fritzing Fab.</translation>
     </message>
     <message>
         <source>Jenny Chowdhury, Lionel Michel, Fabian Althaus, Jannis Leidel, </source>
@@ -200,19 +200,31 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bryant Mairs, Uleshka Asher, Daniel Tzschentke, </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>and Kjell Morgenstern </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ukrainian: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Yelyzaveta Chyhryna</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bryant Mairs, Uleshka Asher, Daniel Tzschentke, and Kjell Morgenstern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Special thanks go out to: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Special thanks go out to all the students and alpha testers who were brave enough to give Fritzing a test spin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fritzing is made possible with funding from the MWFK Brandenburg, the sponsorship of the Design Department of Bauhaus-University Weimar, IxDS, an anonymous donor, Parallax, Picaxe, Sparkfun, from the PCB Fab AISLER, and each paid download.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, Siti Aishah Abdul Raouf</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -288,6 +300,10 @@
         <source>Note: the smaller the keepout, the slower the DRC and Autorouter will run.</source>
         <translation>Noot: Hoe kleiner de veiligheidsafstand, hoe langzamer de DRC en Autorouter zullen zijn.</translation>
     </message>
+    <message>
+        <source>Via size</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>BinManager</name>
@@ -297,7 +313,7 @@
     </message>
     <message>
         <source>BinManager::setDirtyTab: Couldn&apos;t set the bin &apos;%1&apos; as dirty</source>
-        <translation>BinManager::setDirtyTab: Kon de koffer &apos;%1&apos; niet als vuil zetten</translation>
+        <translation type="vanished">BinManager::setDirtyTab: Kon de koffer &apos;%1&apos; niet als vuil zetten</translation>
     </message>
     <message>
         <source>New bin (%1)</source>
@@ -309,11 +325,11 @@
     </message>
     <message>
         <source>Cannot set a NULL bin as the current one</source>
-        <translation>Kan geen NULL koffer instellen als de huidige</translation>
+        <translation type="vanished">Kan geen NULL koffer instellen als de huidige</translation>
     </message>
     <message>
         <source>BinManager::updateTitle: Couldn&apos;t set the bin &apos;%1&apos; as dirty</source>
-        <translation>BinManager::updateTitle: Kon de koffer &apos;%1&apos; niet als vuil zetten</translation>
+        <translation type="vanished">BinManager::updateTitle: Kon de koffer &apos;%1&apos; niet als vuil zetten</translation>
     </message>
     <message>
         <source>Select a Fritzing Parts Bin file to open</source>
@@ -429,7 +445,7 @@
     </message>
     <message>
         <source>Remove from bin</source>
-        <translation>Verwijder uit de koffer</translation>
+        <translation type="vanished">Verwijder uit de koffer</translation>
     </message>
     <message>
         <source>Searching...</source>
@@ -444,7 +460,7 @@
         <translation>Laad een Fritzing onderdeel (.fzpz) of een Fritzing onderdeel koffer (.fzb, .fzbz)</translation>
     </message>
     <message>
-        <source>Select a Fritzing File to Open</source>
+        <source>Select a Fritzing file to open</source>
         <translation>Selecteer een Fritzing Bestand om te Openen</translation>
     </message>
     <message>
@@ -660,6 +676,12 @@ Een aangepast bord svg heeft normaal gesproken een of twee silkscreen lagen en e
     <message>
         <source>Select from the dropdown, or type in a %1 value</source>
         <translation>Selecteer uit het dropdown menu of typ een %1 waarde</translation>
+    </message>
+    <message>
+        <source>Select from the dropdown, or type in a %1 value
+Range: [%2 - %3] %4
+Background: Green = ok, Red = incorrect value, Grey = current value</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -984,6 +1006,21 @@ Er zijn geen banen of connectoren die elkaar overlappen of te dicht bij elkaar l
     </message>
 </context>
 <context>
+    <name>ExportParametersDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DPI</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FApplication</name>
     <message>
         <source>Fritzing failure</source>
@@ -1036,6 +1073,64 @@ Er zijn geen banen of connectoren die elkaar overlappen of te dicht bij elkaar l
         <source>Regenerating parts database...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>This option is usefull if you modify the parts database on your own. If you want to recover from an error, you may be better off downloading the latest Fritzing release.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FabUploadDialog</name>
+    <message>
+        <source>Fritzing Fab Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get your board fabricated this week!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload it now to get a preview rendered by AISLER. Review, and if you like it, order it and get it manufactured in two days.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuleren</translation>
+    </message>
+    <message>
+        <source>Upload to Fab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uploading...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open in browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FabUploadProgress</name>
+    <message>
+        <source>Fritzing</source>
+        <translation type="unfinished">Fritzing</translation>
+    </message>
+    <message>
+        <source>Could not connect to Fritzing fab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error processing the project. The factory says: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FirstTimeHelpDialog</name>
@@ -1052,8 +1147,8 @@ Er zijn geen banen of connectoren die elkaar overlappen of te dicht bij elkaar l
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The &lt;b&gt;PCB View&lt;/b&gt; is where you layout the components will  on a physical PCB (Printed Circuit Board).&lt;br/&gt;&lt;br/&gt;PCBs can be made at home or in a small lab using DIY etching processes. They also can be sent to professional PCB manufacturing services for more precise fabrication. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;The first thing you will need is a board to place your parts on. There should already be one in your sketch, but if not, drag in the board icon from the Parts Bin. The icon matches the image to the right: &lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/parts/svg/core/icon/rectangle_pcb.svg&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br/&gt;&lt;br/&gt;To lay out your PCB, arrange all the components so they fit nicely on the board. Then try to shift them around to minimize the length and confusion of connections. You can also resize rectangular boards. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Once the parts are sorted out, you connect them with copper traces. You can drag out a trace from individual connections or use the autorouter to generate them. The Autoroute button is at the bottom of the window. The button matches the image to the right:&lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/images/icons/toolbarAutorouteEnabled_icon.png&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <source>The &lt;b&gt;PCB View&lt;/b&gt; is where you layout the components on a physical PCB (Printed Circuit Board).&lt;br/&gt;&lt;br/&gt;PCBs can be made at home or in a small lab using DIY etching processes. They also can be sent to professional PCB manufacturing services for more precise fabrication. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;The first thing you will need is a board to place your parts on. There should already be one in your sketch, but if not, drag in the board icon from the Parts Bin. The icon matches the image to the right: &lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/parts/svg/core/icon/rectangle_pcb.svg&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br/&gt;&lt;br/&gt;To lay out your PCB, arrange all the components so they fit nicely on the board. Then try to shift them around to minimize the length and confusion of connections. You can also resize rectangular boards. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Once the parts are sorted out, you connect them with copper traces. You can drag out a trace from individual connections or use the autorouter to generate them. The Autoroute button is at the bottom of the window. The button matches the image to the right:&lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/images/icons/toolbarAutorouteEnabled_icon.png&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
+        <translation>De &lt;b&gt;PCB View&lt;/b&gt; is waar je de componenten op een fysieke PCB (Printed Circuit Board) legt.&lt;br/&gt;&lt;br/&gt;PCBs kunnen thuis of in een klein lab gemaakt worden met behulp van DIY ets-processen. Ze kunnen ook naar professionele PCB fabricage diensten gestuurd worden voor meer precieze fabricage. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Het eerste wat je nodig hebt is een printplaat om je onderdelen op te plaatsen. Er zou er al een moeten zijn in uw schets, maar als dat niet zo is, sleep dan het bord-icoontje van de Onderdelenbak naar binnen. Het icoontje komt overeen met de afbeelding hiernaast: &lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/parts/svg/core/icon/rectangle_pcb.svg&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br/&gt;&lt;br/&gt;Om je printplaat uit te leggen, schik je alle onderdelen zo dat ze mooi op de printplaat passen. Probeer ze dan te verschuiven om de lengte en de verwarring van de aansluitingen te minimaliseren. Je kunt ook de grootte van rechthoekige printplaten aanpassen. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Als de onderdelen eenmaal gesorteerd zijn, verbind je ze met koperen sporen. Je kunt een spoor uit individuele verbindingen slepen of de autorouter gebruiken om ze te genereren. De Autoroute knop bevindt zich onderaan het venster. De knop komt overeen met de afbeelding hiernaast:&lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/images/icons/toolbarAutorouteEnabled_icon.png&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
 </context>
 <context>
@@ -1063,8 +1158,8 @@ Er zijn geen banen of connectoren die elkaar overlappen of te dicht bij elkaar l
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;Your custom-made parts and bins are moved from the hidden app data folder to your fritzing documents folder at &lt;br/&gt;&lt;br/&gt;&lt;em&gt;%1&lt;/em&gt;&lt;br/&gt;&lt;br/&gt;This way we hope to make it easier for you to find and edit them manually.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <source>&lt;p&gt;Your custom-made parts and bins are moved from the hidden app data folder to your fritzing documents folder at &lt;br/&gt;&lt;br/&gt;&lt;em&gt;%1&lt;/em&gt;&lt;br/&gt;&lt;br/&gt;This way, we hope to make it easier for you to find and edit them manually.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Uw op maat gemaakte onderdelen en bakken worden verplaatst van de verborgen app data map naar uw Fritzing documenten map op &lt;br/&gt;&lt;br/&gt;&lt;em&gt;%1&lt;/em&gt;&lt;br/&gt;&lt;br/&gt;Op deze manier hopen we het voor u gemakkelijker te maken om ze handmatig te vinden en te bewerken.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -1171,7 +1266,7 @@ Het is ook mogelijk om op een connector rechts te klikken en kies &apos;Maak gro
         <translation>Aansluitingen</translation>
     </message>
     <message>
-        <source>conn.</source>
+        <source>connection</source>
         <translation>aansl.</translation>
     </message>
     <message numerus="yes">
@@ -1276,6 +1371,14 @@ Het is ook mogelijk om op een connector rechts te klikken en kies &apos;Maak gro
     <message>
         <source>degrees</source>
         <translation>graden</translation>
+    </message>
+    <message>
+        <source>SPICE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No SPICE information. This part will not be simulated.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1463,6 +1566,14 @@ Het is ook mogelijk om op een connector rechts te klikken en kies &apos;Maak gro
     <message>
         <source>silkscreen top</source>
         <translation>silkscreen bovenkant</translation>
+    </message>
+    <message>
+        <source>mn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>mpn</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1719,7 +1830,7 @@ Wij werken er momenteel aan om dit bericht te vermijden en je te laten kiezen tu
         <translation>Opgeslagen %1</translation>
     </message>
     <message>
-        <source>Select a Fritzing File to Open</source>
+        <source>Select a Fritzing file to open</source>
         <translation>Selecteer een Fritzing bestand om te openen</translation>
     </message>
     <message>
@@ -1734,7 +1845,7 @@ Wij werken er momenteel aan om dit bericht te vermijden en je te laten kiezen tu
     </message>
     <message>
         <source>directly loading parts</source>
-        <translation>Direct inladen van onderdelen</translation>
+        <translation type="vanished">Direct inladen van onderdelen</translation>
     </message>
     <message>
         <source>loading %1 (model)</source>
@@ -1874,7 +1985,7 @@ Wij werken er momenteel aan om dit bericht te vermijden en je te laten kiezen tu
     </message>
     <message>
         <source>MainWindow::populateMenuWithIndex: couldn&apos;t load example with id=&apos;%1&apos;</source>
-        <translation>MainWindow::populateMenuWithIndex:&apos;kon voorbeeld niet laden met id=&apos;%1&apos;</translation>
+        <translation type="vanished">MainWindow::populateMenuWithIndex:&apos;kon voorbeeld niet laden met id=&apos;%1&apos;</translation>
     </message>
     <message>
         <source>&amp;Open Recent Files</source>
@@ -2601,11 +2712,11 @@ Controleer a.u.b. alle weergaves voor potentiële fouten.</translation>
     </message>
     <message>
         <source>Donate to Fritzing</source>
-        <translation>Doneer aan Fritzing</translation>
+        <translation type="vanished">Doneer aan Fritzing</translation>
     </message>
     <message>
         <source>Open Fritzing donation web page</source>
-        <translation>Open de Fritzing donatie website</translation>
+        <translation type="vanished">Open de Fritzing donatie website</translation>
     </message>
     <message>
         <source>Export for PCB</source>
@@ -3262,11 +3373,11 @@ Doorgaan en terug naar vorige versie?</translation>
     </message>
     <message>
         <source>MainWindow::moveToPartsFolder mainwindow missing</source>
-        <translation>MainWindow::verplaatsNaarOnderdeelMap Hoofdscherm mist</translation>
+        <translation type="vanished">MainWindow::verplaatsNaarOnderdeelMap Hoofdscherm mist</translation>
     </message>
     <message>
         <source>There is already a part with id &apos;%1&apos; loaded into Fritzing.</source>
-        <translation>Er is al een onderdeel met id &apos;%1&apos; geladen in Fritzing.</translation>
+        <translation type="vanished">Er is al een onderdeel met id &apos;%1&apos; geladen in Fritzing.</translation>
     </message>
     <message>
         <source>SPICE Netlist...</source>
@@ -3587,6 +3698,82 @@ Note: if you want to update later, there are options under the &apos;Part&apos; 
         <source>Display breadboard wires using standard color coding by length</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Local part &apos;%1&apos; incomplete, only &apos;%2&apos; layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View &apos;%1&apos; should be prefixed with &apos;%2/&apos;. Trying to continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not copy subfile &apos;%1&apos; to &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local part &apos;%1&apos; incomplete, subfile not found &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to open local part &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Visit fritzing.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fritzing.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fritzing Fab Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please first save your project in order to upload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Wijzig</translation>
+    </message>
+    <message>
+        <source>Simulate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the application&apos;s preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starts the simulator (DC analysis)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stops the simulator and removes simulator data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MazeRouter</name>
@@ -3790,7 +3977,7 @@ Reden : %2 (errcode %3)</translation>
     </message>
     <message>
         <source>Your sketch does not have a board yet! Please add a PCB in order to use this selection operation.</source>
-        <translation>Je sketch heeft nog geen bord! Voeg a.u.b. een bord toe om te kunnen selecteren.</translation>
+        <translation type="vanished">Je sketch heeft nog geen bord! Voeg a.u.b. een bord toe om te kunnen selecteren.</translation>
     </message>
     <message>
         <source>Please click on a PCB first--this selection operation only works for one board at a time.</source>
@@ -3860,6 +4047,14 @@ Reden : %2 (errcode %3)</translation>
     <message>
         <source>Sorry, http://fab.fritzing.org is not responding to the quote request. Please check your network connection and/or try again later.</source>
         <translation>Sorry, http://fab.fritzing.org reageert niet op je offerte verzoek. Controleer je netwerkinstellingen en/of probeer later opnieuw.</translation>
+    </message>
+    <message>
+        <source>Your sketch does not have a board yet! Please add a PCB to use this selection operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your sketch does not have a board yet!  Please add a PCB to use this selection operation.</source>
+        <translation>Je sketch heeft nog geen bord! Voeg a.u.b. een bord toe om te kunnen selecteren.</translation>
     </message>
 </context>
 <context>
@@ -4437,6 +4632,14 @@ Doorgaan en opslaan?</translation>
         <source>&lt;p&gt;Please enter a prefix to help you identify the part files.&lt;br/&gt;The file names will have the form &apos;PREFIX_%1&apos;.&lt;br/&gt;(It is not necessary to change the proposed prefix, since a unique suffix is always added.)&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Parts Editor Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file %2 with prefix %1 was not saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PEMetadataView</name>
@@ -4947,6 +5150,10 @@ Doorgaan en opslaan?</translation>
         <source>Select a color for this icon</source>
         <translation>Selecteer een kleur voor dit icoon</translation>
     </message>
+    <message>
+        <source>Search...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Perfboard</name>
@@ -5158,6 +5365,26 @@ De shift toets wisselt de as</translation>
         <source>Select a programmer (executable) for %1</source>
         <translation type="unfinished">Selecteer een programmer (uitvoerbaar) voor %1</translation>
     </message>
+    <message>
+        <source>%1</source>
+        <translation type="unfinished">%1</translation>
+    </message>
+    <message>
+        <source>Beta Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The simulator is a beta feature and has not been tested extensively. This means that there are still bugs that need to be fixed and can cause to crash Fritzing. Backup your data and do not use it for production.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ProgramTab</name>
@@ -5314,7 +5541,7 @@ De shift toets wisselt de as</translation>
     </message>
     <message>
         <source>Show the application&apos;s about box</source>
-        <translation type="unfinished">Toon de applicatie about venster</translation>
+        <translation type="obsolete">Toon de applicatie about venster</translation>
     </message>
     <message>
         <source>&amp;New Tab</source>
@@ -5411,6 +5638,14 @@ De shift toets wisselt de as</translation>
     <message>
         <source>%1%2</source>
         <translation type="unfinished">%1%2</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Wijzig</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6069,7 +6304,7 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
     </message>
     <message>
         <source>unable to copy file &apos;%1&apos; to &apos;%2&apos;.</source>
-        <translation>Niet mogelijk bestand &apos;%1&apos; naar &apos;%2&apos; te kopieren.</translation>
+        <translation type="vanished">Niet mogelijk bestand &apos;%1&apos; naar &apos;%2&apos; te kopieren.</translation>
     </message>
     <message>
         <source>Autorouter Settings</source>
@@ -6085,7 +6320,7 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
     </message>
     <message>
         <source>%2 ... %1 wires moved from their saved position</source>
-        <translation>%2 ...%1 draden verplaatst van hun opgeslagen positie</translation>
+        <translation type="vanished">%2 ...%1 draden verplaatst van hun opgeslagen positie</translation>
     </message>
     <message>
         <source>N/A</source>
@@ -6105,10 +6340,6 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
     </message>
     <message>
         <source>Unable to find parts git repository HEAD</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The parts folder &apos;%1&apos; has been changed--it is not in the master branch (%2). %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6145,10 +6376,6 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
     </message>
     <message>
         <source>Unable to retrieve network references for &apos;%1&apos;. %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to retrieve master network reference for &apos;%1&apos;. %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6234,6 +6461,18 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
     </message>
     <message>
         <source>Fritzing requires that you make cutouts using a shape &apos;subtraction&apos; or &apos;difference&apos; operation in your vector graphics editor.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The parts folder &apos;%1&apos; has been changed--it is not in a supported branch (%2). %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to retrieve the network reference for &apos;%1&apos;#%2. %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measuring Tools</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6330,8 +6569,8 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>For more information on pricing see &lt;a href=&apos;https://fab.fritzing.org/pricing&apos;&gt;https://fab.fritzing.org/pricing&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <source>For more pricing information, see &lt;a href=&apos;https://fab.fritzing.org/pricing&apos;&gt;https://fab.fritzing.org/pricing&lt;/a&gt;.</source>
+        <translation>Voor meer informatie over prijzen, zie &lt;a href=&apos;https://fab.fritzing.org/pricing&apos;&gt;https://fab.fritzing.org/pricing&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -6362,6 +6601,10 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Fritzing may have crashed, but some of the changes to the following files may be recovered.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;The date and time each file was backed-up is displayed. If the file was saved, that date and time is also listed for comparison.&lt;/p&gt;&lt;p&gt;The original files are still on your disk, if they were ever saved. You can choose whether to overwrite the original file after you load its recovery file.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Select any files you want to recover from the list below.&lt;/b&gt;&lt;/p&gt;</source>
+        <translation type="vanished">&lt;p&gt;&lt;b&gt;Fritzing is vastgelopen, maar sommige wijzigingen voor de volgende bestanden kunnen herstelt worden.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;De datum en tijd van elk gebackupt bestand is weergegeven. Als het bestand is opgeslagen staat daarvan ook de datum en tijd vermeldt ter vergelijking.&lt;/p&gt;&lt;p&gt;De originele bestanden staan nog op je schijf als je ze ooit opgeslagen hebt. Je kunt er voor kiezen om die bestanden te overschrijven nadat je het herstelbestand geladen hebt.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Selcteer de bestanden die je wilt herstellen uit de lijst hier onder.&lt;/b&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Fritzing may have crashed, but some of the changes to the following files may be recovered.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;The date and time each file was backed up are displayed. If the file was saved, that date and time are also listed for comparison.&lt;/p&gt;&lt;p&gt;The original files are still on your disk if they were ever saved. You can choose whether to overwrite the original file after you load its recovery file.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Select any files you want to recover from the list below.&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Fritzing is vastgelopen, maar sommige wijzigingen voor de volgende bestanden kunnen herstelt worden.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;De datum en tijd van elk gebackupt bestand is weergegeven. Als het bestand is opgeslagen staat daarvan ook de datum en tijd vermeldt ter vergelijking.&lt;/p&gt;&lt;p&gt;De originele bestanden staan nog op je schijf als je ze ooit opgeslagen hebt. Je kunt er voor kiezen om die bestanden te overschrijven nadat je het herstelbestand geladen hebt.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Selcteer de bestanden die je wilt herstellen uit de lijst hier onder.&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
 </context>
@@ -6376,7 +6619,7 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to remove original db file %1</source>
+        <source>Unable to replace the existing database file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6396,7 +6639,13 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
     </message>
     <message>
         <source>You can either type in a resistance value, or select one from the drop down. Format nnn.dP where P is one of &apos;umkMG&apos;</source>
-        <translation>Je kunt een weerstandwaarde invoeren of selecteren uit het dropdown menu. Formaat nnn.dP waar P staat voor een &apos;umkMG&apos;</translation>
+        <translation type="vanished">Je kunt een weerstandwaarde invoeren of selecteren uit het dropdown menu. Formaat nnn.dP waar P staat voor een &apos;umkMG&apos;</translation>
+    </message>
+    <message>
+        <source>Select from the dropdown, or type in a %1 value
+Range: [%2 - %3] %4
+Background: Green = ok, Red = incorrect value, Grey = current value</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6614,6 +6863,32 @@ Fritzing werkt nog steeds, maar je kunt geen eigenschappen van de onderdelen wij
     </message>
     <message>
         <source>Current color (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Simulator</name>
+    <message>
+        <source>Simulator Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occurred when starting the simulation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The simulator gave an error when trying to simulate this circuit. Please, check the wiring and try again. 
+
+Errors:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The simulator gave an error when loading the netlist. Probably some SPICE field is wrong, please, check them.
+If the parts are from the simulation bin, report the bug in GitHub.
+
+Errors:
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7001,16 +7276,8 @@ Noot:Je kunt dit venster ook oproepen door op de tekst van de routing status te 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Click on the mouse position indicator in the status bar (at the bottom) to toggle the units from in to mm to px.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>rotation</source>
         <translation type="unfinished">rotatie</translation>
-    </message>
-    <message>
-        <source>To free-rotate a part in Breadboard or PCB view, select it, then hover your mouse near one of the corners until you see the rotate cursor. Mouse down and that corner will follow your mouse as you drag.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>To free-rotate a logo text or image item in PCB view hold down the Alt (Linux: meta) key and free-rotate as usual.</source>
@@ -7038,10 +7305,6 @@ Noot:Je kunt dit venster ook oproepen door op de tekst van de routing status te 
     </message>
     <message>
         <source>To edit a part label, double-click it, or use the text input widget in the inspector window.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>To display different properties in a part label, as well as rotate it, or change the font, right-click the label.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7101,7 +7364,7 @@ Noot:Je kunt dit venster ook oproepen door op de tekst van de routing status te 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>If Fritzing is missing your special part and you don&apos;t want to build one by yourself, then use pinheaders as connectors and the grid to align them.</source>
+        <source>If Fritzing is missing a particular part and you don&apos;t want to build one yourself, then use pin headers as connectors and the grid to align them.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7210,6 +7473,18 @@ Noot:Je kunt dit venster ook oproepen door op de tekst van de routing status te 
     </message>
     <message>
         <source>When using the Fritzing Fab Service, If there are empty areas of the PCB that you do not want filled with copper, use the copper-blocker part. This resizable part will mask out copper fill in the rectangle it covers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To display different properties in a part label, rotate it, or change the font, right-click the label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click on the mouse position indicator in the status bar (below) to switch the units between inch, mm and px.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To free-rotate a part in Breadboard or PCB view, select it, then hover your mouse near one of the corners until you see the rotate cursor. Mouse down, and that corner will follow your mouse as you drag.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7383,7 +7658,7 @@ Noot:Je kunt dit venster ook oproepen door op de tekst van de routing status te 
     <name>UpdateDialog</name>
     <message>
         <source>Close</source>
-        <translation>Sluiten</translation>
+        <translation type="vanished">Sluiten</translation>
     </message>
     <message>
         <source>A new main release is available for downloading:</source>
@@ -7459,6 +7734,10 @@ Noot:Je kunt dit venster ook oproepen door op de tekst van de routing status te 
     </message>
     <message>
         <source>&lt;p&gt;Installing new parts. This may take a few minutes.&lt;br/&gt;Please do not interrupt the process, as your parts folder could be damaged.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7538,26 +7817,6 @@ Noot:Je kunt dit venster ook oproepen door op de tekst van de routing status te 
     </message>
     <message>
         <source>Fritzing Fab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Donate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fritzing development needs you</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Software development and maintenance is a lot of work. Without your support, it is not possible to keep that up.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Donate and leave a comment.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Donate now</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

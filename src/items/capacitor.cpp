@@ -26,6 +26,7 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "../utils/boundedregexpvalidator.h"
 #include "../sketch/infographicsview.h"
 #include "partlabel.h"
+#include "../sketch/sketchwidget.h"
 
 // TODO
 //	save into parts bin
@@ -66,6 +67,13 @@ bool Capacitor::collectExtraInfo(QWidget * parent, const QString & family, const
 			}
 
 			if (propertyDef->numeric) {
+				focusOutComboBox->setToolTip(tr("Select from the dropdown, or type in a %1 value\n"
+												"Range: [%2 - %3] %4\n"
+												"Background: Green = ok, Red = incorrect value, Grey = current value").
+											 arg(returnProp).
+											 arg(TextUtils::convertToPowerPrefix(propertyDef->minValue)).
+											 arg(TextUtils::convertToPowerPrefix(propertyDef->maxValue)).
+											 arg(propertyDef->symbol));
 				if (!current.isEmpty()) {
 					double val = TextUtils::convertFromPowerPrefixU(current, propertyDef->symbol);
 					if (!propertyDef->menuItems.contains(val)) {
@@ -101,11 +109,15 @@ bool Capacitor::collectExtraInfo(QWidget * parent, const QString & family, const
 				if (propertyDef->maxValue > propertyDef->minValue) {
 					validator->setBounds(propertyDef->minValue, propertyDef->maxValue);
 				}
-				QString pattern = QString("((\\d{1,3})|(\\d{1,3}\\.)|(\\d{1,3}\\.\\d{1,2}))[%1]{0,1}[%2]{0,1}")
-				                  .arg(TextUtils::PowerPrefixesString)
-				                  .arg(propertyDef->symbol);
+	//			QString pattern = QString("((\\d{0,10})|(\\d{0,10}\\.)|(\\d{0,10}\\.\\d{1,10}))[%1]{0,1}[%2]{0,1}")
+				QString pattern = QString("((\\d{1,3})|(\\d{1,3}\\.)|(\\d{1,3}\\.\\d{1,2}))[%1]{0,1}[%2]{0,1}").arg(
+	//			QString pattern = QString("((\\d{0,3})|(\\d{0,3}\\.)|(\\d{0,3}\\.\\d{1,3}))[%1]{0,1}[%2]{0,1}")
+					TextUtils::PowerPrefixesString, 
+					propertyDef->symbol
+				);
 				validator->setRegExp(QRegExp(pattern));
 				focusOutComboBox->setValidator(validator);
+				connect(focusOutComboBox->validator(), SIGNAL(sendState(QValidator::State)), this, SLOT(textModified(QValidator::State)));
 				connect(focusOutComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(propertyEntry(const QString &)));
 			}
 			else {
@@ -122,6 +134,35 @@ bool Capacitor::collectExtraInfo(QWidget * parent, const QString & family, const
 	}
 
 	return PaletteItem::collectExtraInfo(parent, family, prop, value, swappingEnabled, returnProp, returnValue, returnWidget, hide);
+}
+
+/**
+ * Sets the appropriate background colour in the combo box when the text is modified. When a user changes the text of an editable
+ * property in a combo box, this function is called. The function checks the validator of the combo box and sets a red background if the
+ * state is Intermediate (the value does is not within the limits of the property) or green if the state is Acceptable. Invalid states
+ * are not possible as the characters that make the string invalid are deleted if introduced.
+ * not changed in this function.
+ * @param[in] text The new string in the combo box.
+ */
+void Capacitor::textModified(QValidator::State state) {
+	BoundedRegExpValidator * validator = qobject_cast<BoundedRegExpValidator *>(sender());
+	if (validator == NULL) return;
+	FocusOutComboBox * focusOutComboBox = qobject_cast<FocusOutComboBox *>(validator->parent());
+	if (focusOutComboBox == NULL) return;
+
+	if (state == QValidator::Acceptable) {
+		QColor backColor = QColor(210, 246, 210);
+		QLineEdit *lineEditor = focusOutComboBox->lineEdit();
+		QPalette pal = lineEditor->palette();
+		pal.setColor(QPalette::Base, backColor);
+		lineEditor->setPalette(pal);
+	} else if (state == QValidator::Intermediate) {
+		QColor backColor = QColor(246, 210, 210);
+		QLineEdit *lineEditor = focusOutComboBox->lineEdit();
+		QPalette pal = lineEditor->palette();
+		pal.setColor(QPalette::Base, backColor);
+		lineEditor->setPalette(pal);
+	}
 }
 
 void Capacitor::propertyEntry(const QString & text) {

@@ -45,6 +45,7 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "../program/programwindow.h"
 #include "../svg/svg2gerber.h"
 #include "../routingstatus.h"
+#include "../simulation/simulator.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -160,6 +161,7 @@ class MainWindow : public FritzingWindow
 	Q_OBJECT
 	Q_PROPERTY(int fireQuoteDelay READ fireQuoteDelay WRITE setFireQuoteDelay DESIGNABLE true)
 
+	void setEnableSubmenu(QMenu *menu, bool value);
 public:
 	MainWindow(class ReferenceModel *referenceModel, QWidget * parent);
 	MainWindow(QFile & fileToLoad);
@@ -228,6 +230,10 @@ public:
 	void setFireQuoteDelay(int);
 	void setInitialTab(int);
 	void noSchematicConversion();
+	QString getSpiceNetlist(QString, QList< QList<class ConnectorItem *>* >&, QSet<class ItemBase *>& );
+	bool isSimulatorEnabled();
+	void enableSimulator(bool);
+	void triggerSimulator();
 
 public:
 	static void initNames();
@@ -244,6 +250,7 @@ signals:
 public slots:
 	void ensureClosable();
 	QList<ModelPart*> loadBundledPart(const QString &fileName, bool addToBin);
+	QList<ModelPart *> loadPart(const QString &fileName, bool addToBin);
 	void acceptAlienFiles();
 	void statusMessage(QString message, int timeout);
 	void showPCBView();
@@ -489,6 +496,9 @@ protected:
 	void saveAsAuxAux(const QString & fileName);
 	void printAux(QPrinter &printer, bool removeBackground, bool paginate);
 	void exportAux(QString fileName, QImage::Format format, int quality, bool removeBackground);
+	QRectF prepareExport(bool removeBackground);
+	void transformPainter(QPainter &painter, qreal width);
+	void afterExport(bool removeBackground);
 	void notYetImplemented(QString action);
 	bool eventFilter(QObject *obj, QEvent *event);
 	void setActionsIcons(int index, QList<QAction *> &);
@@ -500,6 +510,8 @@ protected:
 	void exportSvg(double res, bool selectedItems, bool flatten);
 	void exportSvgWatermark(QString & svg, double res);
 	void exportEtchable(bool wantPDF, bool wantSVG);
+
+	QString getSpiceNetlist(QString simulationName);
 
 	virtual QList<QWidget*> getButtonsForView(ViewLayer::ViewID viewId);
 	const QString untitledFileName();
@@ -546,6 +558,8 @@ protected:
 	class ExpandingLabel * createRoutingStatusLabel(SketchAreaWidget *);
 	SketchToolButton *createExportEtchableButton(SketchAreaWidget *parent);
 	SketchToolButton *createNoteButton(SketchAreaWidget *parent);
+	QWidget *createSimulationButton(SketchAreaWidget *parent);
+
 	QWidget *createToolbarSpacer(SketchAreaWidget *parent);
 	SketchAreaWidget *currentSketchArea();
 	const QString fritzingTitle();
@@ -603,11 +617,12 @@ protected:
 	virtual void createWindowMenu();
 	virtual void createTraceMenus();
 	virtual void createHelpMenu();
-	virtual void createRotateSubmenu(QMenu * parentMenu);
-	virtual void createZOrderSubmenu(QMenu * parentMenu);
+	virtual QMenu * createRotateSubmenu(QMenu * parentMenu);
+	virtual QMenu * createZOrderSubmenu(QMenu * parentMenu);
 	//  virtual void createZOrderWireSubmenu(QMenu * parentMenu);
-	virtual void createAlignSubmenu(QMenu * parentMenu);
-	virtual void createAddToBinSubmenu(QMenu * parentMenu);
+
+	virtual QMenu * createAlignSubmenu(QMenu * parentMenu);
+	virtual QMenu * createAddToBinSubmenu(QMenu * parentMenu);
 	virtual void populateExportMenu();
 
 	// dock management
@@ -662,6 +677,8 @@ protected:
 	QPointer<class SketchModel> m_sketchModel;
 	QPointer<class HtmlInfoView> m_infoView;
 	QPointer<QToolBar> m_toolbar;
+
+	class Simulator *m_simulator;
 
 	bool m_closing = false;
 	bool m_dontClose = false;
@@ -749,6 +766,8 @@ protected:
 	QAction *m_selectAllAct = nullptr;
 	QAction *m_deselectAct = nullptr;
 	QAction *m_addNoteAct = nullptr;
+	QAction *m_startSimulatorAct = nullptr;
+	QAction *m_stopSimulatorAct = nullptr;
 
 	// Part Menu
 	QMenu *m_partMenu = nullptr;
@@ -948,6 +967,11 @@ protected:
 	bool m_obsoleteSMDOrientation = false;
 	QWidget * m_orderFabButton = nullptr;
 	int m_fireQuoteDelay = 0;
+
+	// exporting
+	QGraphicsItem * m_watermark;
+	QList<QGraphicsItem*> m_selectedItems;
+	QColor m_bgColor;
 
 public:
 	static int AutosaveTimeoutMinutes;

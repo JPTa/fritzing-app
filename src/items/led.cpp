@@ -38,6 +38,10 @@ LED::LED( ModelPart * modelPart, ViewLayer::ViewID viewID, const ViewGeometry & 
 }
 
 LED::~LED() {
+	if (m_ledLight) {
+		delete m_ledLight;
+		m_ledLight = nullptr;
+	}
 }
 
 QString LED::retrieveSvg(ViewLayer::ViewLayerID viewLayerID, QHash<QString, QString> & svgHash, bool blackOnly, double dpi, double & factor)
@@ -128,6 +132,81 @@ void LED::setColor(const QString & color)
 		title.chop(4);
 		QStringList strings = color.split(" ");
 		modelPart()->setLocalTitle(title + strings.at(0));
+	}
+}
+
+/**
+ * Resets the brightness of an LED to its original specification.
+ * @brief Restores the original brightness of an LED.
+ */
+void LED::resetBrightness() {
+	setBrightness(1-offColor);
+	if(m_ledLight && this->viewID()==ViewLayer::ViewID::BreadboardView) {
+		m_ledLight->hide();
+	}
+}
+
+/**
+ * Changes the brightness of an LED based on a brightness parameter.
+ * The color is the specfied in the LED file and it can  get 30% brighter than that
+ * color if brightness is equal to 1. A brightness of 0 reduces scales the color to
+ * 30% of the original color (offColor).
+ *
+ * @brief Changes the brightness of an LED.
+ * @param[in] brightness The brightness value, its range is from 0 (off) to 1 (on)
+ */
+void LED::setBrightness(double brightness){
+	QString errorStr;
+	int errorLine;
+	int errorColumn;
+	QDomDocument domDocument;
+	if (!domDocument.setContent( BreadboardSvg.value(m_filename), &errorStr, &errorLine, &errorColumn)) {
+		return;
+	}
+
+	//get the color of the LED
+	QString colorString;
+	QString color = prop("color");
+	foreach (PropertyDef * propertyDef, m_propertyDefs.keys()) {
+		if (propertyDef->name.compare("color") == 0) {
+			colorString = propertyDef->adjuncts.value(color, "");
+			break;
+		}
+	}
+	if (colorString.isEmpty()) return;
+
+	int red = colorString.mid(1,2).toInt(nullptr, 16);
+	int green = colorString.mid(3,2).toInt(nullptr, 16);
+	int blue = colorString.mid(5,2).toInt(nullptr, 16);
+
+	if (brightness > 1) brightness = 1;
+	if (brightness < 0) brightness = 0;
+
+	//Find the new color values
+	red = offColor*red + brightness*red;
+	green = offColor*green + brightness*green;
+	blue = offColor*blue + brightness*blue;
+	if(red > 255) red = 255;
+	if(green > 255) green = 255;
+	if(blue > 255) blue = 255;
+
+	QString newColorStr = QString("#%1%2%3")
+			.arg(red, 2, 16)
+			.arg(green, 2, 16)
+			.arg(blue, 2, 16);
+	newColorStr.replace(' ', '0');
+
+	//Change the color of the LED
+	QDomElement root = domDocument.documentElement();
+	slamColor(root, newColorStr);
+	reloadRenderer(domDocument.toString(),true);
+
+	//Add light comming out of the LED in BreadboardView
+	if(this->viewID()==ViewLayer::ViewID::BreadboardView) {
+		if(!m_ledLight) {
+			m_ledLight = new LedLight(this);
+		}
+		m_ledLight->setLight(brightness, red, green, blue);
 	}
 }
 

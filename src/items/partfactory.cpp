@@ -191,10 +191,14 @@ ItemBase * PartFactory::createPartAux( ModelPart * modelPart, ViewLayer::ViewID 
 			}
 
 		}
-		// TODO: use the list in properties.xml
-		if (moduleID == "alps-starter-pot9mm") {
+
+		// If the moduleID ends with any of the suffixes listed in properties.xml,
+		// use the Capacitor class to be able to change the properties in the Inspector pane
+		// TODO: Otimize the code above this line, as it can be simplified
+		if (PropertyDefMaster::partPropertiesCanBeModified(moduleID)) {
 			return new Capacitor(modelPart, viewID, viewGeometry, id, itemMenu, doLabel);
 		}
+
 		QString family = modelPart->properties().value("family", "");
 		if (family.compare("mystery part", Qt::CaseInsensitive) == 0) {
 			return new MysteryPart(modelPart, viewID, viewGeometry, id, itemMenu, doLabel);
@@ -633,7 +637,7 @@ void PartFactory::fixSubpartBounds(QDomElement & top, ModelPartShared * mps)
 	QDomDocument doc = top.ownerDocument();
 	TextUtils::getSvgSizes(doc, sWidth, sHeight, vbWidth, vbHeight);
 
-	QMatrix m = renderer.matrixForElement(mps->subpartID());
+	QTransform m = renderer.transformForElement(mps->subpartID());
 	QRectF elementBounds = renderer.boundsOnElement(mps->subpartID());
 	QRectF bounds = m.mapRect(elementBounds);                                   // bounds is in terms of the whole svg
 
@@ -649,15 +653,13 @@ void PartFactory::fixSubpartBounds(QDomElement & top, ModelPartShared * mps)
 		texts.append(nodeList.at(i).toElement());
 	}
 
-	int ix = 0;
 	foreach (QDomElement text, texts) {
 		text.setTagName("g");
 	}
 
-	ix = 0;
 	foreach (QDomElement text, texts) {
 		int minX, minY, maxX, maxY;
-		QMatrix matrix;
+		QTransform matrix;
 		QRectF viewBox2;
 		SvgText::renderText(image, text, minX, minY, maxX, maxY, matrix, viewBox2);
 		QRectF r(minX * viewBox.width() / image.width(),

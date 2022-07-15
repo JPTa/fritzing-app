@@ -1821,8 +1821,6 @@ bool SketchWidget::dragEnterEventAux(QDragEnterEvent *event) {
 	if (!canDropModelPart(modelPart)) return false;
 
 	m_droppingWire = (modelPart->itemType() == ModelPart::Wire);
-	m_droppingOffset = offset;
-
 	if (ItemDrag::cache().contains(this)) {
 		m_droppingItem->setVisible(true);
 	}
@@ -1841,9 +1839,7 @@ bool SketchWidget::dragEnterEventAux(QDragEnterEvent *event) {
 			return false;
 		}
 		QSizeF size = m_droppingItem->sceneBoundingRect().size();
-		if (size.width() < offset.x() || size.height() < offset.y()) {
-			offset = m_droppingOffset = QPointF(size.width() / 2, size.height() / 2);
-		}
+		m_droppingOffset = QPointF(size.width() / 2, size.height() / 2);
 
 		QHash<long, ItemBase *> savedItems;
 		QHash<Wire *, ConnectorItem *> savedWires;
@@ -3277,22 +3273,16 @@ bool SketchWidget::checkMoved(bool wait)
 		return false;
 	}
 
-	int moveCount = m_savedItems.count();
-	if (moveCount <= 0) {
+	if (m_savedItems.empty()) {
 		return false;
 	}
 
-	ItemBase * saveBase = nullptr;
-	foreach (ItemBase * item, m_savedItems) {
-		saveBase = item;
-		break;
-	}
-
+	int moveCount = m_savedItems.count();
+	ItemBase * saveBase = m_savedItems.begin().value();
 	clearHoldingSelectItem();
-
-	QString moveString;
 	QString viewName = ViewLayer::viewIDName(m_viewID);
 
+	QString moveString;
 	if (moveCount == 1) {
 		moveString = tr("Move %2 (%1)").arg(viewName).arg(saveBase->title());
 	}
@@ -3857,11 +3847,11 @@ void SketchWidget::dragWireChanged(Wire* wire, ConnectorItem * fromOnWire, Conne
 	if (!m_bendpointWire) {
 		ConnectorItem * anchor = wire->otherConnector(fromOnWire);
 		if (anchor) {
-			extendChangeConnectionCommand(BaseCommand::CrossView, anchor, m_connectorDragConnector, ViewLayer::specFromID(wire->viewLayerID()), true, parentCommand);
+			extendChangeConnectionCommand(BaseCommand::CrossView, m_connectorDragConnector, anchor, ViewLayer::specFromID(wire->viewLayerID()), true, parentCommand);
 			doEmit = true;
 		}
 		if (to) {
-			extendChangeConnectionCommand(BaseCommand::CrossView, fromOnWire, to, ViewLayer::specFromID(wire->viewLayerID()), true, parentCommand);
+			extendChangeConnectionCommand(BaseCommand::CrossView, to, fromOnWire, ViewLayer::specFromID(wire->viewLayerID()), true, parentCommand);
 			doEmit = true;
 		}
 
@@ -4415,7 +4405,7 @@ void SketchWidget::continueZChangeAux(QList<ItemBase *> & bases, const QString &
 		double oldZ = bases[i]->getViewGeometry().z();
 		if (bases[i]->viewLayerID() != lastViewLayerID) {
 			lastViewLayerID = bases[i]->viewLayerID();
-			z = qFloor(oldZ);
+			z = lastViewLayerID;
 		}
 		else {
 			z += ViewLayer::getZIncrement();
@@ -4444,6 +4434,11 @@ void SketchWidget::sortAnyByZ(const QList<QGraphicsItem *> & items, QList<ItemBa
 
 	// order by z
 	qSort(bases.begin(), bases.end(), ItemBase::zLessThan);
+
+	//Print Z order before changing them
+	//for (int i = 0; i < bases.size(); i++) {
+	//	DebugDialog::debug(QString("%1 viewLayerID=%2 z=%3").arg(bases[i]->instanceTitle()).arg(bases[i]->viewLayerID()).arg(bases[i]->z()));
+	//}
 }
 
 bool SketchWidget::lessThan(int a, int b) {
@@ -4471,7 +4466,7 @@ void SketchWidget::changeZ(QHash<long, RealPair * > triplets, double (*pairAcces
 		if (viewLayer) {
 			newZ = viewLayer->getZFromBelow(newZ, this->viewFromBelow());
 		}
-		//DebugDialog::debug(QString("change z %1 %2").arg(itemBase->id()).arg(newZ));
+		//DebugDialog::debug(QString("change z %1 %2 %3 %4").arg(itemBase->instanceTitle()).arg(itemBase->id()).arg(newZ).arg(itemBase->viewLayerID()));
 		items[i]->setZValue(newZ);
 
 	}
@@ -5197,7 +5192,14 @@ void SketchWidget::makeDeleteItemCommandFinalSlot(ItemBase * itemBase, bool fore
 
 	ModelPart * mp = itemBase->modelPart();
 	// single view because this is called for each view
-	new DeleteItemCommand(this, BaseCommand::SingleView, mp->moduleID(), itemBase->viewLayerPlacement(), itemBase->getViewGeometry(), itemBase->id(), mp->modelIndex(), parentCommand);
+	PartLabel * partLabel = itemBase->partLabel();
+	QPointF *labelPos = NULL;
+	QPointF *labelOffset = NULL;
+	if(partLabel) {
+		labelPos = new QPointF(partLabel->pos());
+		labelOffset = new QPointF(partLabel->getOffset());
+	}
+	new DeleteItemCommand(this, BaseCommand::SingleView, mp->moduleID(), itemBase->viewLayerPlacement(), itemBase->getViewGeometry(), itemBase->id(), mp->modelIndex(), labelPos, labelOffset, parentCommand);
 }
 
 void SketchWidget::prepDeleteProps(ItemBase * itemBase, long id, const QString & newModuleID, QMap<QString, QString> & propsMap, QUndoCommand * parentCommand)
@@ -5366,29 +5368,36 @@ void SketchWidget::prepDeleteOtherProps(ItemBase * itemBase, long id, const QStr
 		QString buses = itemBase->prop("buses");
 		QString newBuses = propsMap.value("buses");
 		if (newBuses.isEmpty()) newBuses = buses;
-		if (!buses.isEmpty()) {
+		if (!newBuses.isEmpty()) {
 			new SetPropCommand(this, id, "buses", buses, newBuses, true, parentCommand);
 		}
 
 		QString layout = itemBase->prop("layout");
 		QString newLayout = propsMap.value("layout");
 		if (newLayout.isEmpty()) newLayout = layout;
-		if (!layout.isEmpty()) {
+		if (!newLayout.isEmpty()) {
 			new SetPropCommand(this, id, "layout", layout, newLayout, true, parentCommand);
 		}
 	}
 
-	QString value = itemBase->modelPart()->localProp(ModelPartShared::PartNumberPropertyName).toString();
+	for (auto&& propertyName : {ModelPartShared::MNPropertyName, ModelPartShared::MPNPropertyName, ModelPartShared::PartNumberPropertyName}) {
+		prepDeleteOtherPropsNumbers(propertyName, itemBase, id, newModuleID, parentCommand);
+	}
+}
+
+void SketchWidget::prepDeleteOtherPropsNumbers(const QString & propertyName, ItemBase * itemBase, long id, const QString & newModuleID, QUndoCommand * parentCommand)
+{
+	QString value = itemBase->modelPart()->localProp(propertyName).toString();
 	if (!value.isEmpty()) {
 		QString newValue = value;
 		if (!newModuleID.isEmpty()) {
 			newValue = "";
 			ModelPart * newModelPart = m_referenceModel->retrieveModelPart(newModuleID);
 			if (newModelPart) {
-				newValue = newModelPart->properties().value(ModelPartShared::PartNumberPropertyName, "");
+				newValue = newModelPart->properties().value(propertyName, "");
 			}
 		}
-		new SetPropCommand(this, id, ModelPartShared::PartNumberPropertyName, value, newValue, true, parentCommand);
+		new SetPropCommand(this, id, propertyName, value, newValue, true, parentCommand);
 	}
 }
 
@@ -5563,6 +5572,21 @@ void SketchWidget::wireSplitSlot(Wire* wire, QPointF newPos, QPointF oldPos, con
 
 	long fromID = wire->id();
 
+	if (m_alignToGrid) {
+		alignLoc(newPos, newPos, QPointF(0,0), QPointF(0,0));
+	} else {
+		//We need to place the bendpoint on the original wire
+		//The distance between the point clicked and the line is not goint to be very big.
+		//Thus, we can simplify the calculation
+		double dist = pow(newPos.x() - (oldPos.x()+oldLine.x1()), 2) + pow(newPos.y() - (oldPos.y()+oldLine.y1()), 2);
+		dist = pow(dist, 0.5);
+		double distWire = pow(oldLine.x1() - oldLine.x2(), 2) + pow(oldLine.y1() - oldLine.y2(), 2);
+		distWire = pow(distWire, 0.5);
+		if (dist > distWire) dist = distWire;
+		QPointF point = oldLine.pointAt(dist/distWire);
+		newPos.setX(point.x() + oldPos.x());
+		newPos.setY(point.y() + oldPos.y());
+	}
 	QLineF newLine(oldLine.p1(), newPos - oldPos);
 
 	long newID = ItemBase::getNextID();
@@ -6177,6 +6201,8 @@ void SketchWidget::setUpSwapReconnect(SwapThing & swapThing, ItemBase * itemBase
 
 void SketchWidget::makeSwapWire(SketchWidget * bbView, ItemBase * itemBase, long newID, ConnectorItem * fromConnectorItem, ConnectorItem * toConnectorItem, Connector * newConnector, QUndoCommand * parentCommand) {
 	Q_UNUSED(fromConnectorItem);
+	if (!toConnectorItem) return;
+
 	long wireID = ItemBase::getNextID();
 	ViewGeometry vg;
 	new AddItemCommand(bbView, BaseCommand::CrossView, ModuleIDNames::WireModuleIDName, itemBase->viewLayerPlacement(), vg, wireID, false, -1, parentCommand);
@@ -7173,30 +7199,17 @@ void SketchWidget::resizeNote(long itemID, const QSizeF & size)
 
 QString SketchWidget::renderToSVG(RenderThing & renderThing, QGraphicsItem * board, const LayerList & layers)
 {
-	renderThing.board = board;
-	if (board) {
-		renderThing.offsetRect = board->sceneBoundingRect();
-	}
-	return renderToSVG(renderThing, layers);
+	renderThing.setBoard(board);
+	QList<QGraphicsItem *> itemsAndLabels = getVisibleItemsAndLabels(renderThing, layers);
+	return renderToSVG(renderThing, itemsAndLabels);
 }
 
-
-QString SketchWidget::renderToSVG(RenderThing & renderThing, const LayerList & layers)
+QList<QGraphicsItem *> SketchWidget::getVisibleItemsAndLabels(RenderThing & renderThing, const LayerList & layers)
 {
-
 	QList<QGraphicsItem *> itemsAndLabels;
 	QRectF itemsBoundingRect;
-	QList<QGraphicsItem *> items;
-	if (renderThing.selectedItems) {
-		items = scene()->selectedItems();
-	}
-	else if (!renderThing.board) {
-		items = scene()->items();
-	}
-	else {
-		items = scene()->collidingItems(renderThing.board);
-		items << renderThing.board;
-	}
+	QList<QGraphicsItem *> items = renderThing.getItems(scene());
+
 	foreach (QGraphicsItem * item, items) {
 		ItemBase * itemBase = dynamic_cast<ItemBase *>(item);
 		if (!itemBase) continue;
@@ -7223,7 +7236,7 @@ QString SketchWidget::renderToSVG(RenderThing & renderThing, const LayerList & l
 	}
 
 	renderThing.itemsBoundingRect = itemsBoundingRect;
-	return renderToSVG(renderThing, itemsAndLabels);
+	return itemsAndLabels;
 }
 
 QString translateSVG(QString & svg, QPointF loc, double dpi, double printerScale) {

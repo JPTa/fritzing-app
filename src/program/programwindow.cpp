@@ -219,10 +219,12 @@ void ProgramWindow::initMenus(QMenuBar * menubar) {
 
 	m_editMenu->addSeparator();
 
+#ifndef Q_OS_MAC
 	m_preferencesAction = new QAction(tr("&Preferences..."), this);
-	m_preferencesAction->setStatusTip(tr("Show the application's about box"));
+	//m_preferencesAction->setStatusTip(tr("Show the application's about box"));
 	connect(m_preferencesAction, SIGNAL(triggered()), QApplication::instance(), SLOT(preferences()));
 	m_editMenu->addAction(m_preferencesAction);
+#endif
 
 	m_programMenu = menubar->addMenu(tr("&Code"));
 
@@ -319,6 +321,11 @@ void ProgramWindow::showMenus(bool show) {
 		m_copyAction->setEnabled(show);
 		m_pasteAction->setEnabled(show);
 		m_selectAction->setEnabled(show);
+	if (show) {
+		m_editMenu->setTitle(tr("&Edit"));
+	} else {
+		m_editMenu->setTitle(tr("Edit"));
+	}
 	}
 	if (m_programMenu) {
 		m_programMenu->menuAction()->setVisible(show);
@@ -327,6 +334,11 @@ void ProgramWindow::showMenus(bool show) {
 	if (m_viewMenu) {
 		m_viewMenu->menuAction()->setVisible(show);
 		m_viewMenu->setEnabled(show);
+	if (show) {
+		m_viewMenu->setTitle(tr("&View"));
+	} else {
+		m_viewMenu->setTitle(tr("View"));
+	}
 	}
 }
 

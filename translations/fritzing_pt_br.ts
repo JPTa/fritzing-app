@@ -41,7 +41,7 @@
     </message>
     <message>
         <source>Special thanks goes out to: </source>
-        <translation>Agradecimentos especiais para:</translation>
+        <translation type="vanished">Agradecimentos especiais para:</translation>
     </message>
     <message>
         <source>Jussi &amp;Auml;ngeslev&amp;auml;, Massimo Banzi, Ayah Bdeir, </source>
@@ -69,151 +69,159 @@
     </message>
     <message>
         <source>Fritzing is made possible with funding from the </source>
-        <translation>Fritzing foi possível com o financiamento proveniente da </translation>
+        <translation type="vanished">Fritzing foi possível com o financiamento proveniente da </translation>
     </message>
     <message>
         <source>MWFK Brandenburg, the sponsorship of the Design </source>
-        <translation>MWFK Brandenburg, o patrocinador do Design </translation>
+        <translation type="vanished">MWFK Brandenburg, o patrocinador do Design </translation>
     </message>
     <message>
         <source>Department of Bauhaus-University Weimar, </source>
-        <translation>Departamento da  Bauhaus-University Weimar, </translation>
+        <translation type="vanished">Departamento da  Bauhaus-University Weimar, </translation>
     </message>
     <message>
         <source>IxDS, an anonymous donor, Parallax, Picaxe, Sparkfun, </source>
-        <translation>IxDS,um patrocinador anônimo, Parallax, Picaxe, Sparkfun, </translation>
+        <translation type="vanished">IxDS,um patrocinador anônimo, Parallax, Picaxe, Sparkfun, </translation>
     </message>
     <message>
         <source>Special thanks goes out as well to all the students </source>
-        <translation>Agradecimentos especiais vão também para todos os estudantes </translation>
+        <translation type="vanished">Agradecimentos especiais vão também para todos os estudantes </translation>
     </message>
     <message>
         <source>and alpha testers who were brave enough to give </source>
-        <translation>e todos os alpha testers que foram corajosos o suficiente para fazer </translation>
+        <translation type="vanished">e todos os alpha testers que foram corajosos o suficiente para fazer </translation>
     </message>
     <message>
         <source>Fritzing a test spin. </source>
-        <translation>os testes iniciais no Fritzing. </translation>
+        <translation type="vanished">os testes iniciais no Fritzing. </translation>
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</source>
         <translation type="vanished">&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <source>and from each purchase of a Fritzing Starter Kit or a PCB from Fritzing Fab.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Jenny Chowdhury, Lionel Michel, Fabian Althaus, Jannis Leidel, </source>
-        <translation type="unfinished"></translation>
+        <translation>Jenny Chowdhury, Lionel Michel, Fabian Althaus, Jannis Leidel, </translation>
     </message>
     <message>
         <source>&lt;b&gt;2007-%1 Fritzing&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;2007-%1 Fritzing&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Thanks for the translations go out to: </source>
-        <translation type="unfinished"></translation>
+        <translation>Obrigado pelas traduções: </translation>
     </message>
     <message>
         <source>Spanish: </source>
-        <translation type="unfinished"></translation>
+        <translation>Espanhol: </translation>
     </message>
     <message>
         <source>Italian: </source>
-        <translation type="unfinished"></translation>
+        <translation>Italiano: </translation>
     </message>
     <message>
         <source>Portuguese (European): </source>
-        <translation type="unfinished"></translation>
+        <translation>Português (Europeu): </translation>
     </message>
     <message>
         <source>Portuguese (Brazilian): </source>
-        <translation type="unfinished"></translation>
+        <translation>Português (Brasileiro): </translation>
     </message>
     <message>
         <source>Chinese (Simplified): </source>
-        <translation type="unfinished"></translation>
+        <translation>Chinês (Simplificado): </translation>
     </message>
     <message>
         <source>Japanese: </source>
-        <translation type="unfinished"></translation>
+        <translation>Japonês: </translation>
     </message>
     <message>
         <source>Russian: </source>
-        <translation type="unfinished"></translation>
+        <translation>Russo: </translation>
     </message>
     <message>
         <source>Dutch: </source>
-        <translation type="unfinished"></translation>
+        <translation>Holandês: </translation>
     </message>
     <message>
         <source>Czech: </source>
-        <translation type="unfinished"></translation>
+        <translation>Checo: </translation>
     </message>
     <message>
         <source>Korean: </source>
-        <translation type="unfinished"></translation>
+        <translation>Coreano: </translation>
     </message>
     <message>
         <source>Slovak: </source>
-        <translation type="unfinished"></translation>
+        <translation>Eslovaco: </translation>
     </message>
     <message>
         <source>Greek: </source>
-        <translation type="unfinished"></translation>
+        <translation>Grego: </translation>
     </message>
     <message>
         <source>French: </source>
-        <translation type="unfinished"></translation>
+        <translation>Francês: </translation>
     </message>
     <message>
         <source>Turkish: </source>
-        <translation type="unfinished"></translation>
+        <translation>Turco: </translation>
     </message>
     <message>
         <source>Bulgarian: </source>
-        <translation type="unfinished"></translation>
+        <translation>Búlgaro: </translation>
     </message>
     <message>
         <source>Yuelin and Ninjia</source>
-        <translation type="unfinished"></translation>
+        <translation>Yuelin e Ninjia</translation>
     </message>
     <message>
         <source>Chinese (Traditional): </source>
-        <translation type="unfinished"></translation>
+        <translation>Chinês (Tradicional): </translation>
     </message>
     <message>
         <source>Robert Lee</source>
-        <translation type="unfinished"></translation>
+        <translation>Robert Lee</translation>
     </message>
     <message>
         <source>Hiroshi Suzuki</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiroshi Suzuki</translation>
     </message>
     <message>
         <source>Jinbuhm Kim</source>
-        <translation type="unfinished"></translation>
+        <translation>Jinbuhm Kim</translation>
     </message>
     <message>
         <source>Version %1.%2.%3 &lt;br&gt;&lt;small&gt;(%4%5 %6) %7 [Qt %8]&lt;/small&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bryant Mairs, Uleshka Asher, Daniel Tzschentke, </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>and Kjell Morgenstern </source>
-        <translation type="unfinished"></translation>
+        <translation>Versão %1,%2,%3 &lt;br&gt;&lt;small&gt;(%4%5 %6) %7 [Qt %8]&lt;/small&gt;</translation>
     </message>
     <message>
         <source>Ukrainian: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ucraniano: </translation>
     </message>
     <message>
         <source>Yelyzaveta Chyhryna</source>
-        <translation type="unfinished"></translation>
+        <translation>Yelyzaveta Chyhryna</translation>
+    </message>
+    <message>
+        <source>Bryant Mairs, Uleshka Asher, Daniel Tzschentke, and Kjell Morgenstern</source>
+        <translation>Bryant Mairs, Uleshka Asher, Daniel Tzschentke, e Kjell Morgenstern</translation>
+    </message>
+    <message>
+        <source>Special thanks go out to: </source>
+        <translation>Agradecimentos especiais para: </translation>
+    </message>
+    <message>
+        <source>Special thanks go out to all the students and alpha testers who were brave enough to give Fritzing a test spin.</source>
+        <translation>Um agradecimento especial a todos os alunos e aos alunos que tiveram a coragem de dar um giro de teste ao Fritzing.</translation>
+    </message>
+    <message>
+        <source>Fritzing is made possible with funding from the MWFK Brandenburg, the sponsorship of the Design Department of Bauhaus-University Weimar, IxDS, an anonymous donor, Parallax, Picaxe, Sparkfun, from the PCB Fab AISLER, and each paid download.</source>
+        <translation>Fritzing é possível com o financiamento da MWFK Brandenburg, o patrocínio do Departamento de Design da Bauhaus-University Weimar, IxDS, um doador anónimo, Parallax, Picaxe, Sparkfun, da PCB Fab AISLER, e cada um deles pago para download.</translation>
+    </message>
+    <message>
+        <source>, Siti Aishah Abdul Raouf</source>
+        <translation>, Siti Aishah Abdul Raouf</translation>
     </message>
 </context>
 <context>
@@ -288,6 +296,10 @@
         <source>Note: the smaller the keepout, the slower the DRC and Autorouter will run.</source>
         <translation>Nota: quanto menor a margem de distâancia, maior o tempo para DRC e autoroteador serem executados.</translation>
     </message>
+    <message>
+        <source>Via size</source>
+        <translation>Tamanho de Vias</translation>
+    </message>
 </context>
 <context>
     <name>BinManager</name>
@@ -301,7 +313,7 @@
     </message>
     <message>
         <source>BinManager::setDirtyTab: Couldn&apos;t set the bin &apos;%1&apos; as dirty</source>
-        <translation>BinManager::setDirtyTab: Não foi possível definir o pacote &apos;%1&apos; como suja</translation>
+        <translation type="vanished">BinManager::setDirtyTab: Não foi possível definir o pacote &apos;%1&apos; como suja</translation>
     </message>
     <message>
         <source>Fritzing Bin Files (*%1 *%2);;Fritzing Bin (*%1);;Fritzing Shareable Bin (*%2)</source>
@@ -309,11 +321,11 @@
     </message>
     <message>
         <source>Cannot set a NULL bin as the current one</source>
-        <translation>Não é possível definir NULL como pacote atual</translation>
+        <translation type="vanished">Não é possível definir NULL como pacote atual</translation>
     </message>
     <message>
         <source>BinManager::updateTitle: Couldn&apos;t set the bin &apos;%1&apos; as dirty</source>
-        <translation>GestorPacote::TítuloAtualizado: Não se pode definir o pacote &apos;%1&apos; como sujo</translation>
+        <translation type="vanished">GestorPacote::TítuloAtualizado: Não se pode definir o pacote &apos;%1&apos; como sujo</translation>
     </message>
     <message>
         <source>Select a Fritzing Parts Bin file to open</source>
@@ -429,7 +441,7 @@
     </message>
     <message>
         <source>Remove from bin</source>
-        <translation>Remover do pacote</translation>
+        <translation type="vanished">Remover do pacote</translation>
     </message>
     <message>
         <source>Searching...</source>
@@ -444,7 +456,7 @@
         <translation>Carregar uma parte Fritzing (.fzpz), ou um pacote Fritzing de partes (.fzb, .fzbz)</translation>
     </message>
     <message>
-        <source>Select a Fritzing File to Open</source>
+        <source>Select a Fritzing file to open</source>
         <translation>Selecione um arquivo Fritzing para abrir</translation>
     </message>
     <message>
@@ -473,19 +485,19 @@
     </message>
     <message>
         <source>Copy to Sketch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Copiar para Esboço</translation>
     </message>
     <message>
         <source>Copy all the parts in the bin to a sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Copie todas as peças na caixa para um esboço</translation>
     </message>
     <message>
         <source>Copy all to Sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Copie tudo para o Sketch</translation>
     </message>
     <message>
         <source>Copy all loaded parts to the sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar todas as peças carregadas para o esboço</translation>
     </message>
 </context>
 <context>
@@ -660,6 +672,12 @@ Um svg de placa personalizada tipicamente tem uma ou mais camadas de impressão 
     <message>
         <source>Select from the dropdown, or type in a %1 value</source>
         <translation>Selecione do menu cascata, ou digite um valor %1</translation>
+    </message>
+    <message>
+        <source>Select from the dropdown, or type in a %1 value
+Range: [%2 - %3] %4
+Background: Green = ok, Red = incorrect value, Grey = current value</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -983,6 +1001,21 @@ Um svg de placa personalizada tipicamente tem uma ou mais camadas de impressão 
     </message>
 </context>
 <context>
+    <name>ExportParametersDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DPI</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FApplication</name>
     <message>
         <source>Fritzing failure</source>
@@ -1035,6 +1068,64 @@ Um svg de placa personalizada tipicamente tem uma ou mais camadas de impressão 
         <source>Regenerating parts database...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>This option is usefull if you modify the parts database on your own. If you want to recover from an error, you may be better off downloading the latest Fritzing release.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FabUploadDialog</name>
+    <message>
+        <source>Fritzing Fab Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get your board fabricated this week!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload it now to get a preview rendered by AISLER. Review, and if you like it, order it and get it manufactured in two days.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancelar</translation>
+    </message>
+    <message>
+        <source>Upload to Fab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uploading...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open in browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FabUploadProgress</name>
+    <message>
+        <source>Fritzing</source>
+        <translation type="unfinished">Fritzing</translation>
+    </message>
+    <message>
+        <source>Could not connect to Fritzing fab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error processing the project. The factory says: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FirstTimeHelpDialog</name>
@@ -1051,7 +1142,7 @@ Um svg de placa personalizada tipicamente tem uma ou mais camadas de impressão 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The &lt;b&gt;PCB View&lt;/b&gt; is where you layout the components will  on a physical PCB (Printed Circuit Board).&lt;br/&gt;&lt;br/&gt;PCBs can be made at home or in a small lab using DIY etching processes. They also can be sent to professional PCB manufacturing services for more precise fabrication. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;The first thing you will need is a board to place your parts on. There should already be one in your sketch, but if not, drag in the board icon from the Parts Bin. The icon matches the image to the right: &lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/parts/svg/core/icon/rectangle_pcb.svg&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br/&gt;&lt;br/&gt;To lay out your PCB, arrange all the components so they fit nicely on the board. Then try to shift them around to minimize the length and confusion of connections. You can also resize rectangular boards. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Once the parts are sorted out, you connect them with copper traces. You can drag out a trace from individual connections or use the autorouter to generate them. The Autoroute button is at the bottom of the window. The button matches the image to the right:&lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/images/icons/toolbarAutorouteEnabled_icon.png&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
+        <source>The &lt;b&gt;PCB View&lt;/b&gt; is where you layout the components on a physical PCB (Printed Circuit Board).&lt;br/&gt;&lt;br/&gt;PCBs can be made at home or in a small lab using DIY etching processes. They also can be sent to professional PCB manufacturing services for more precise fabrication. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;The first thing you will need is a board to place your parts on. There should already be one in your sketch, but if not, drag in the board icon from the Parts Bin. The icon matches the image to the right: &lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/parts/svg/core/icon/rectangle_pcb.svg&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br/&gt;&lt;br/&gt;To lay out your PCB, arrange all the components so they fit nicely on the board. Then try to shift them around to minimize the length and confusion of connections. You can also resize rectangular boards. &lt;br/&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Once the parts are sorted out, you connect them with copper traces. You can drag out a trace from individual connections or use the autorouter to generate them. The Autoroute button is at the bottom of the window. The button matches the image to the right:&lt;/td&gt;&lt;td&gt;&lt;img src=&quot;:resources/images/icons/toolbarAutorouteEnabled_icon.png&quot; /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1062,8 +1153,8 @@ Um svg de placa personalizada tipicamente tem uma ou mais camadas de impressão 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;Your custom-made parts and bins are moved from the hidden app data folder to your fritzing documents folder at &lt;br/&gt;&lt;br/&gt;&lt;em&gt;%1&lt;/em&gt;&lt;br/&gt;&lt;br/&gt;This way we hope to make it easier for you to find and edit them manually.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <source>&lt;p&gt;Your custom-made parts and bins are moved from the hidden app data folder to your fritzing documents folder at &lt;br/&gt;&lt;br/&gt;&lt;em&gt;%1&lt;/em&gt;&lt;br/&gt;&lt;br/&gt;This way, we hope to make it easier for you to find and edit them manually.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Suas peças e caixas feitas sob medida são movidas da pasta de dados da aplicação escondida para a pasta de documentos Fritzing em &lt;br/&gt;&lt;br/&gt;&lt;em&gt;%1&lt;/em&gt;&lt;br/&gt;&lt;br/&gt; Desta forma, esperamos facilitar a sua localização e edição manual.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -1170,7 +1261,7 @@ Também é possível escolher um conector como ponto de aterramento clicando com
         <translation>Conexões</translation>
     </message>
     <message>
-        <source>conn.</source>
+        <source>connection</source>
         <translation>con.</translation>
     </message>
     <message numerus="yes">
@@ -1274,6 +1365,14 @@ Também é possível escolher um conector como ponto de aterramento clicando com
     </message>
     <message>
         <source>degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SPICE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No SPICE information. This part will not be simulated.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1462,6 +1561,14 @@ Também é possível escolher um conector como ponto de aterramento clicando com
     <message>
         <source>silkscreen top</source>
         <translation>impressão superior</translation>
+    </message>
+    <message>
+        <source>mn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>mpn</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1672,7 +1779,7 @@ Também é possível escolher um conector como ponto de aterramento clicando com
         <translation>Salvo &apos;%1&apos;</translation>
     </message>
     <message>
-        <source>Select a Fritzing File to Open</source>
+        <source>Select a Fritzing file to open</source>
         <translation>Selecione um arquivo Fritzing para abrir</translation>
     </message>
     <message>
@@ -1687,7 +1794,7 @@ Também é possível escolher um conector como ponto de aterramento clicando com
     </message>
     <message>
         <source>directly loading parts</source>
-        <translation>Carregando componentes diretamente</translation>
+        <translation type="vanished">Carregando componentes diretamente</translation>
     </message>
     <message>
         <source>loading %1 (model)</source>
@@ -2273,7 +2380,7 @@ Estamos trabalhando para evitar esta mensagem, e apenas deixar você escolher en
     </message>
     <message>
         <source>MainWindow::populateMenuWithIndex: couldn&apos;t load example with id=&apos;%1&apos;</source>
-        <translation>MainWindow::populateMenuWithIndex: Não foi possível carreagar o exemplo com a id=&apos;%1&apos;</translation>
+        <translation type="vanished">MainWindow::populateMenuWithIndex: Não foi possível carreagar o exemplo com a id=&apos;%1&apos;</translation>
     </message>
     <message>
         <source>&amp;Add to bin...</source>
@@ -2600,11 +2707,11 @@ Por favor verifique em todos os modos de visualização para verificar alguma mo
     </message>
     <message>
         <source>Donate to Fritzing</source>
-        <translation>Doar para o Fritzing</translation>
+        <translation type="vanished">Doar para o Fritzing</translation>
     </message>
     <message>
         <source>Open Fritzing donation web page</source>
-        <translation>Abrir a página web de donativos Fritzing</translation>
+        <translation type="vanished">Abrir a página web de donativos Fritzing</translation>
     </message>
     <message>
         <source>Export for PCB</source>
@@ -3261,11 +3368,11 @@ Ir em frente e desfazer?</translation>
     </message>
     <message>
         <source>MainWindow::moveToPartsFolder mainwindow missing</source>
-        <translation>MainWindow::moveToPartsFolder janela principal faltando</translation>
+        <translation type="vanished">MainWindow::moveToPartsFolder janela principal faltando</translation>
     </message>
     <message>
         <source>There is already a part with id &apos;%1&apos; loaded into Fritzing.</source>
-        <translation>Já existe um componente com id &apos;%1&apos; carregado no Fritzing.</translation>
+        <translation type="vanished">Já existe um componente com id &apos;%1&apos; carregado no Fritzing.</translation>
     </message>
     <message>
         <source>SPICE Netlist...</source>
@@ -3584,6 +3691,82 @@ Note: if you want to update later, there are options under the &apos;Part&apos; 
         <source>Display breadboard wires using standard color coding by length</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Local part &apos;%1&apos; incomplete, only &apos;%2&apos; layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View &apos;%1&apos; should be prefixed with &apos;%2/&apos;. Trying to continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not copy subfile &apos;%1&apos; to &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local part &apos;%1&apos; incomplete, subfile not found &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to open local part &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Visit fritzing.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fritzing.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fritzing Fab Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please first save your project in order to upload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Editar</translation>
+    </message>
+    <message>
+        <source>Simulate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the application&apos;s preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starts the simulator (DC analysis)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stops the simulator and removes simulator data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MazeRouter</name>
@@ -3787,7 +3970,7 @@ Razão: %2 (código do erro %3)</translation>
     </message>
     <message>
         <source>Your sketch does not have a board yet! Please add a PCB in order to use this selection operation.</source>
-        <translation>Seu esquemático não possui uma placa ainda! Adicione uma PCB para uitilizar esta operação de seleção.</translation>
+        <translation type="vanished">Seu esquemático não possui uma placa ainda! Adicione uma PCB para uitilizar esta operação de seleção.</translation>
     </message>
     <message>
         <source>Please click on a PCB first--this selection operation only works for one board at a time.</source>
@@ -3851,11 +4034,19 @@ Razão: %2 (código do erro %3)</translation>
     </message>
     <message>
         <source>Fritzing Fab Quote</source>
-        <translation>Fritzing Fab</translation>
+        <translation>Oferta Fritzing Fab</translation>
     </message>
     <message>
         <source>Sorry, http://fab.fritzing.org is not responding to the quote request. Please check your network connection and/or try again later.</source>
         <translation>Desculpe, http://gab.fritzing.org não está respondendo ao seu requerimento. Favor checar sua conexão com a rede e/ou tente novamente mais tarde.</translation>
+    </message>
+    <message>
+        <source>Your sketch does not have a board yet! Please add a PCB to use this selection operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your sketch does not have a board yet!  Please add a PCB to use this selection operation.</source>
+        <translation>Seu esquemático não tem uma placa ainda!  Adicione uma PCB para utilizar esta operação de seleção.</translation>
     </message>
 </context>
 <context>
@@ -4433,6 +4624,14 @@ Vá em frente e salve?</translation>
         <source>&lt;p&gt;Please enter a prefix to help you identify the part files.&lt;br/&gt;The file names will have the form &apos;PREFIX_%1&apos;.&lt;br/&gt;(It is not necessary to change the proposed prefix, since a unique suffix is always added.)&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Parts Editor Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file %2 with prefix %1 was not saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PEMetadataView</name>
@@ -4944,6 +5143,10 @@ Vá em frente e salve?</translation>
         <source>Select a color for this icon</source>
         <translation>Selecionar uma cor para este ícone</translation>
     </message>
+    <message>
+        <source>Search...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Perfboard</name>
@@ -5155,6 +5358,26 @@ shift troca eixo de scroll</translation>
         <source>Select a programmer (executable) for %1</source>
         <translation type="unfinished">Selecione um programador (executavel) para %1</translation>
     </message>
+    <message>
+        <source>%1</source>
+        <translation type="unfinished">%1</translation>
+    </message>
+    <message>
+        <source>Beta Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The simulator is a beta feature and has not been tested extensively. This means that there are still bugs that need to be fixed and can cause to crash Fritzing. Backup your data and do not use it for production.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ProgramTab</name>
@@ -5311,7 +5534,7 @@ shift troca eixo de scroll</translation>
     </message>
     <message>
         <source>Show the application&apos;s about box</source>
-        <translation type="unfinished">Mostrar a caixa &quot;sobre&quot; da aplicação</translation>
+        <translation type="obsolete">Mostrar a caixa &quot;sobre&quot; da aplicação</translation>
     </message>
     <message>
         <source>&amp;New Tab</source>
@@ -5408,6 +5631,14 @@ shift troca eixo de scroll</translation>
     <message>
         <source>%1%2</source>
         <translation type="unfinished">%1%2</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Editar</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6066,7 +6297,7 @@ is already there, we won&apos;t add it again, right?</source>
     </message>
     <message>
         <source>unable to copy file &apos;%1&apos; to &apos;%2&apos;.</source>
-        <translation>não foi possível copiar o arquivo &apos;%1&apos; para &apos;%2&apos;.</translation>
+        <translation type="vanished">não foi possível copiar o arquivo &apos;%1&apos; para &apos;%2&apos;.</translation>
     </message>
     <message>
         <source>Autorouter Settings</source>
@@ -6079,10 +6310,6 @@ is already there, we won&apos;t add it again, right?</source>
     <message>
         <source>Text</source>
         <translation>Texto</translation>
-    </message>
-    <message>
-        <source>%2 ... %1 wires moved from their saved position</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>N/A</source>
@@ -6102,10 +6329,6 @@ is already there, we won&apos;t add it again, right?</source>
     </message>
     <message>
         <source>Unable to find parts git repository HEAD</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The parts folder &apos;%1&apos; has been changed--it is not in the master branch (%2). %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6142,10 +6365,6 @@ is already there, we won&apos;t add it again, right?</source>
     </message>
     <message>
         <source>Unable to retrieve network references for &apos;%1&apos;. %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to retrieve master network reference for &apos;%1&apos;. %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6231,6 +6450,18 @@ is already there, we won&apos;t add it again, right?</source>
     </message>
     <message>
         <source>Fritzing requires that you make cutouts using a shape &apos;subtraction&apos; or &apos;difference&apos; operation in your vector graphics editor.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The parts folder &apos;%1&apos; has been changed--it is not in a supported branch (%2). %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to retrieve the network reference for &apos;%1&apos;#%2. %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measuring Tools</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6331,7 +6562,7 @@ is already there, we won&apos;t add it again, right?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>For more information on pricing see &lt;a href=&apos;https://fab.fritzing.org/pricing&apos;&gt;https://fab.fritzing.org/pricing&lt;/a&gt;.</source>
+        <source>For more pricing information, see &lt;a href=&apos;https://fab.fritzing.org/pricing&apos;&gt;https://fab.fritzing.org/pricing&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6363,6 +6594,10 @@ is already there, we won&apos;t add it again, right?</source>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Fritzing may have crashed, but some of the changes to the following files may be recovered.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;The date and time each file was backed-up is displayed. If the file was saved, that date and time is also listed for comparison.&lt;/p&gt;&lt;p&gt;The original files are still on your disk, if they were ever saved. You can choose whether to overwrite the original file after you load its recovery file.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Select any files you want to recover from the list below.&lt;/b&gt;&lt;/p&gt;</source>
+        <translation type="vanished">&lt;p&gt;&lt;b&gt;Fritzing talvez tenha falhado, mas algumas das alterações nos seguintes arquivos talvez sejam recuperadas.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A data e hora de cada arquivo recuperado é mostrado. Se o arquivo foi salvo, a data e hora também está listado para comparação.&lt;/p&gt;&lt;p&gt;Os arquivos originais ainda estão no disco, caso eles não tenham sido salvos. Você pode escolher se deseja substituir o arquivo original depois de carregar o seu arquivo de recuperação.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Selecione os arquivos que deseja recuperar a partir da lista abaixo.&lt;/b&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Fritzing may have crashed, but some of the changes to the following files may be recovered.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;The date and time each file was backed up are displayed. If the file was saved, that date and time are also listed for comparison.&lt;/p&gt;&lt;p&gt;The original files are still on your disk if they were ever saved. You can choose whether to overwrite the original file after you load its recovery file.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Select any files you want to recover from the list below.&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Fritzing talvez tenha falhado, mas algumas das alterações nos seguintes arquivos talvez sejam recuperadas.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A data e hora de cada arquivo recuperado é mostrado. Se o arquivo foi salvo, a data e hora também está listado para comparação.&lt;/p&gt;&lt;p&gt;Os arquivos originais ainda estão no disco, caso eles não tenham sido salvos. Você pode escolher se deseja substituir o arquivo original depois de carregar o seu arquivo de recuperação.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Selecione os arquivos que deseja recuperar a partir da lista abaixo.&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
 </context>
@@ -6377,7 +6612,7 @@ is already there, we won&apos;t add it again, right?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to remove original db file %1</source>
+        <source>Unable to replace the existing database file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6397,7 +6632,13 @@ is already there, we won&apos;t add it again, right?</source>
     </message>
     <message>
         <source>You can either type in a resistance value, or select one from the drop down. Format nnn.dP where P is one of &apos;umkMG&apos;</source>
-        <translation>Você pode ou digitar o valor da resistência, ou selecionar uma no menu. Formato é nnn.dP onde P é um de &apos;umkMG&apos;</translation>
+        <translation type="vanished">Você pode ou digitar o valor da resistência, ou selecionar uma no menu. Formato é nnn.dP onde P é um de &apos;umkMG&apos;</translation>
+    </message>
+    <message>
+        <source>Select from the dropdown, or type in a %1 value
+Range: [%2 - %3] %4
+Background: Green = ok, Red = incorrect value, Grey = current value</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6615,6 +6856,32 @@ is already there, we won&apos;t add it again, right?</source>
     </message>
     <message>
         <source>Current color (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Simulator</name>
+    <message>
+        <source>Simulator Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occurred when starting the simulation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The simulator gave an error when trying to simulate this circuit. Please, check the wiring and try again. 
+
+Errors:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The simulator gave an error when loading the netlist. Probably some SPICE field is wrong, please, check them.
+If the parts are from the simulation bin, report the bug in GitHub.
+
+Errors:
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7001,15 +7268,7 @@ Nota: você pode também acionar este aviso passando o mouse pelo texto de estad
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Click on the mouse position indicator in the status bar (at the bottom) to toggle the units from in to mm to px.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>rotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>To free-rotate a part in Breadboard or PCB view, select it, then hover your mouse near one of the corners until you see the rotate cursor. Mouse down and that corner will follow your mouse as you drag.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7038,10 +7297,6 @@ Nota: você pode também acionar este aviso passando o mouse pelo texto de estad
     </message>
     <message>
         <source>To edit a part label, double-click it, or use the text input widget in the inspector window.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>To display different properties in a part label, as well as rotate it, or change the font, right-click the label.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7101,7 +7356,7 @@ Nota: você pode também acionar este aviso passando o mouse pelo texto de estad
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>If Fritzing is missing your special part and you don&apos;t want to build one by yourself, then use pinheaders as connectors and the grid to align them.</source>
+        <source>If Fritzing is missing a particular part and you don&apos;t want to build one yourself, then use pin headers as connectors and the grid to align them.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7210,6 +7465,18 @@ Nota: você pode também acionar este aviso passando o mouse pelo texto de estad
     </message>
     <message>
         <source>When using the Fritzing Fab Service, If there are empty areas of the PCB that you do not want filled with copper, use the copper-blocker part. This resizable part will mask out copper fill in the rectangle it covers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To display different properties in a part label, rotate it, or change the font, right-click the label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click on the mouse position indicator in the status bar (below) to switch the units between inch, mm and px.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To free-rotate a part in Breadboard or PCB view, select it, then hover your mouse near one of the corners until you see the rotate cursor. Mouse down, and that corner will follow your mouse as you drag.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7383,7 +7650,7 @@ Nota: você pode também acionar este aviso passando o mouse pelo texto de estad
     <name>UpdateDialog</name>
     <message>
         <source>Close</source>
-        <translation>Fechar</translation>
+        <translation type="vanished">Fechar</translation>
     </message>
     <message>
         <source>A new main release is available for downloading:</source>
@@ -7459,6 +7726,10 @@ Nota: você pode também acionar este aviso passando o mouse pelo texto de estad
     </message>
     <message>
         <source>&lt;p&gt;Installing new parts. This may take a few minutes.&lt;br/&gt;Please do not interrupt the process, as your parts folder could be damaged.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7538,26 +7809,6 @@ Nota: você pode também acionar este aviso passando o mouse pelo texto de estad
     </message>
     <message>
         <source>Fritzing Fab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Donate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fritzing development needs you</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Software development and maintenance is a lot of work. Without your support, it is not possible to keep that up.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Donate and leave a comment.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Donate now</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

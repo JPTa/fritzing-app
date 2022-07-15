@@ -66,7 +66,7 @@ void PrefsDialog::initViewInfo(int index, const QString & viewName, const QStrin
 	m_viewInfoThings[index].curvy = curvy;
 }
 
-void PrefsDialog::initLayout(QFileInfoList & languages, QList<Platform *> platforms)
+void PrefsDialog::initLayout(QFileInfoList & languages, QList<Platform *> platforms, bool en_simulator)
 {
 	m_tabWidget = new QTabWidget();
 	m_general = new QWidget();
@@ -74,6 +74,7 @@ void PrefsDialog::initLayout(QFileInfoList & languages, QList<Platform *> platfo
 	m_schematic = new QWidget();
 	m_pcb = new QWidget();
 	m_code = new QWidget();
+	m_beta_features = new QWidget();
 	m_tabWidget->setObjectName("preDia_tabs");
 
 	m_tabWidget->addTab(m_general, tr("General"));
@@ -81,6 +82,7 @@ void PrefsDialog::initLayout(QFileInfoList & languages, QList<Platform *> platfo
 	m_tabWidget->addTab(m_schematic, m_viewInfoThings[1].viewName);
 	m_tabWidget->addTab(m_pcb, m_viewInfoThings[2].viewName);
 	m_tabWidget->addTab(m_code, tr("Code View"));
+	m_tabWidget->addTab(m_beta_features, tr("Beta Features"));
 
 	QVBoxLayout * vLayout = new QVBoxLayout();
 	vLayout->addWidget(m_tabWidget);
@@ -93,6 +95,8 @@ void PrefsDialog::initLayout(QFileInfoList & languages, QList<Platform *> platfo
 
 	initCode(m_code, platforms);
 	m_platforms = platforms;
+
+	initBetaFeatures(m_beta_features, en_simulator);
 
 	QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
@@ -156,6 +160,13 @@ void PrefsDialog::initCode(QWidget * widget, QList<Platform *> platforms)
 	QVBoxLayout * vLayout = new QVBoxLayout();
 	vLayout->addWidget(createProgrammerForm(platforms));
 	vLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Preferred, QSizePolicy::Expanding));
+	widget->setLayout(vLayout);
+}
+
+void PrefsDialog::initBetaFeatures(QWidget * widget, bool en_simulator)
+{
+	QVBoxLayout * vLayout = new QVBoxLayout();
+	vLayout->addWidget(createBetaFeaturesForm(en_simulator));
 	widget->setLayout(vLayout);
 }
 
@@ -264,12 +275,14 @@ QWidget* PrefsDialog::createColorForm()
 	h1->addWidget(c1);
 
 	QColor connectedColor = ItemBase::connectedColor();
-	ClickableLabel * cl1 = new ClickableLabel(tr("%1 (click to change...)").arg(connectedColor.name()), this);
-	connect(cl1, SIGNAL(clicked()), this, SLOT(setConnectedColor()));
-	cl1->setPalette(QPalette(connectedColor));
-	cl1->setAutoFillBackground(true);
-	cl1->setMargin(MARGIN);
-	h1->addWidget(cl1);
+	m_connectedColorLabel = new QLabel(QString("%1").arg(connectedColor.name()), this);
+	QPushButton * pb1 = new QPushButton(tr("%1 (click to change...)").arg(""), this);
+	connect(pb1, SIGNAL(clicked()), this, SLOT(setConnectedColor()));
+	m_connectedColorLabel->setPalette(QPalette(connectedColor));
+	m_connectedColorLabel->setAutoFillBackground(true);
+	m_connectedColorLabel->setMargin(MARGIN);
+	h1->addWidget(m_connectedColorLabel);
+	h1->addWidget(pb1);
 
 	f1->setLayout(h1);
 	layout->addWidget(f1);
@@ -284,12 +297,14 @@ QWidget* PrefsDialog::createColorForm()
 	h2->addWidget(c2);
 
 	QColor unconnectedColor = ItemBase::unconnectedColor();
-	ClickableLabel * cl2 = new ClickableLabel(tr("%1 (click to change...)").arg(unconnectedColor.name()), this);
-	connect(cl2, SIGNAL(clicked()), this, SLOT(setUnconnectedColor()));
-	cl2->setPalette(QPalette(unconnectedColor));
-	cl2->setAutoFillBackground(true);
-	cl2->setMargin(MARGIN);
-	h2->addWidget(cl2);
+	m_unconnectedColorLabel = new QLabel(QString("%1").arg(unconnectedColor.name()), this);
+	QPushButton * pb2 = new QPushButton(tr("%1 (click to change...)").arg(""), this);
+	connect(pb2, SIGNAL(clicked()), this, SLOT(setUnconnectedColor()));
+	m_unconnectedColorLabel->setPalette(QPalette(unconnectedColor));
+	m_unconnectedColorLabel->setAutoFillBackground(true);
+	m_unconnectedColorLabel->setMargin(MARGIN);
+	h2->addWidget(m_unconnectedColorLabel);
+	h2->addWidget(pb2);
 
 	f2->setLayout(h2);
 	layout->addWidget(f2);
@@ -301,36 +316,28 @@ QWidget* PrefsDialog::createColorForm()
 QWidget* PrefsDialog::createOtherForm()
 {
 	QGroupBox * formGroupBox = new QGroupBox(tr("Clear Settings"));
-	QHBoxLayout *layout = new QHBoxLayout();
-	layout->setSpacing(SPACING);
-
-	QVBoxLayout * vlayout = new QVBoxLayout();
-	vlayout->setMargin(0);
-	vlayout->setSpacing(0);
+	QVBoxLayout *layout = new QVBoxLayout();
+	layout->setMargin(0);
+	layout->setSpacing(0);
 
 	QLabel * clearLabel = new QLabel(QObject::tr("Clear all saved settings and close this dialog immediately."));
 	clearLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	clearLabel->setWordWrap(true);
-	clearLabel->setFixedWidth(FORMLABELWIDTH);
-	vlayout->addWidget(clearLabel);
+	layout->addWidget(clearLabel);
 
-	vlayout->addSpacing(SPACING);
+	layout->addSpacing(SPACING);
 
 	clearLabel = new QLabel(QObject::tr("This action does not delete any files; it restores settings to their default values."));
 	clearLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	clearLabel->setWordWrap(true);
-	clearLabel->setFixedWidth(FORMLABELWIDTH);
-	vlayout->addWidget(clearLabel);
+	layout->addWidget(clearLabel);
 
-	vlayout->addSpacing(SPACING);
+	layout->addSpacing(SPACING);
 
 	clearLabel = new QLabel(QObject::tr("There is no undo for this action, and no further warning!!!!"));
 	clearLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	clearLabel->setWordWrap(true);
-	clearLabel->setFixedWidth(FORMLABELWIDTH);
-	vlayout->addWidget(clearLabel);
-
-	layout->addLayout(vlayout);
+	layout->addWidget(clearLabel);
 
 	QPushButton * clear = new QPushButton(QObject::tr("Clear Settings"), this);
 	connect(clear, SIGNAL(clicked()), this, SLOT(clear()));
@@ -349,7 +356,7 @@ QWidget* PrefsDialog::createProgrammerForm(QList<Platform *> platforms) {
 	foreach (Platform * platform, platforms) {
 		QLabel *platformLb = new QLabel("");
 		platformLb->setTextFormat(Qt::RichText);
-		platformLb->setText(tr("<b>%1</b>").arg(platform->getName()));
+		platformLb->setText(QString("<b>%1</b>").arg(platform->getName()));
 		layout->addWidget(platformLb);
 
 		QFrame * locationFrame = new QFrame(formGroupBox);
@@ -425,6 +432,31 @@ void PrefsDialog::changeLanguage(int index)
 	}
 }
 
+QWidget * PrefsDialog::createBetaFeaturesForm(bool en_simulator) {
+	QGroupBox * simulator = new QGroupBox(tr("Simulator"), this );
+
+	QVBoxLayout * layout = new QVBoxLayout();
+	layout->setSpacing(SPACING);
+
+	QLabel * label = new QLabel(tr("The simulator is a beta feature and has not been tested extensively. "
+								   "This means that there are still bugs that need to be fixed and can cause "
+								   "to crash Fritzing. Backup your data and do not use it for production."));
+	label->setWordWrap(true);
+	layout->addWidget(label);
+	layout->addSpacing(10);
+
+	QCheckBox * box = new QCheckBox(tr("Enable simulator"));
+	box->setFixedWidth(FORMLABELWIDTH);
+	box->setChecked(en_simulator);
+	layout->addWidget(box);
+
+	simulator->setLayout(layout);
+
+	connect(box, SIGNAL(clicked(bool)), this, SLOT(toggleSimulator(bool)));
+
+	return simulator;
+}
+
 void PrefsDialog::clear() {
 	m_cleared = true;
 	accept();
@@ -444,9 +476,9 @@ void PrefsDialog::setConnectedColor() {
 
 	QColor c = setColorDialog.selectedColor();
 	m_settings.insert("connectedColor", c.name());
-	ClickableLabel * cl = qobject_cast<ClickableLabel *>(sender());
-	if (cl) {
-		cl->setPalette(QPalette(c));
+	if (m_connectedColorLabel) {
+		m_connectedColorLabel->setPalette(QPalette(c));
+		m_connectedColorLabel->setText(QString("%1").arg(c.name()));
 	}
 }
 
@@ -460,9 +492,9 @@ void PrefsDialog::setUnconnectedColor() {
 
 	QColor c = setColorDialog.selectedColor();
 	m_settings.insert("unconnectedColor", c.name());
-	ClickableLabel * cl = qobject_cast<ClickableLabel *>(sender());
-	if (cl) {
-		cl->setPalette(QPalette(c));
+	if (m_unconnectedColorLabel) {
+		m_unconnectedColorLabel->setPalette(QPalette(c));
+		m_unconnectedColorLabel->setText(QString("%1").arg(c.name()));
 	}
 }
 
@@ -509,6 +541,10 @@ void PrefsDialog::updateWheelText() {
 
 void PrefsDialog::toggleAutosave(bool checked) {
 	m_settings.insert("autosaveEnabled", QString("%1").arg(checked));
+}
+
+void PrefsDialog::toggleSimulator(bool checked) {
+	m_settings.insert("simulatorEnabled", QString("%1").arg(checked));
 }
 
 void PrefsDialog::changeAutosavePeriod(int value) {

@@ -41,6 +41,8 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "../utils/misc.h"
 #include "../commands.h"
 
+#include "renderthing.h"
+
 struct ItemCount {
 	int selCount;
 	int hasLabelCount;
@@ -70,20 +72,6 @@ struct SwapThing {
 	QHash<ConnectorItem *, Connector *> swappedGender;
 	SketchWidget * bbView;
 	QMap<QString, QString> propsMap;
-};
-
-struct RenderThing {
-	bool selectedItems;
-	double printerScale;
-	bool blackOnly;
-	QRectF imageRect;
-	QRectF offsetRect;
-	double dpi;
-	bool renderBlocker;
-	QRectF itemsBoundingRect;
-	QGraphicsItem * board;
-	bool empty;
-	bool hideTerminalPoints;
 };
 
 class SizeItem : public QObject, public QGraphicsLineItem
@@ -507,13 +495,14 @@ protected:
 	QGraphicsItem * getClickedItem(QList<QGraphicsItem *> & items);
 	void cleanupRatsnests(QList< QPointer<ConnectorItem> > & connectorItems, bool connect);
 	void rotateWire(Wire *, QTransform & rotation, QPointF center, bool undoOnly, QUndoCommand * parentCommand);
-	QString renderToSVG(RenderThing &, const LayerList &);
+	QList<QGraphicsItem *> getVisibleItemsAndLabels(RenderThing & renderThing, const LayerList & layers);
 	QString renderToSVG(RenderThing &, QList<QGraphicsItem *> & itemsAndLabels);
 	QList<ItemBase *> collectSuperSubs(ItemBase *);
 	void squashShapes(QPointF scenePos);
 	void unsquashShapes();
 	virtual bool updateOK(ConnectorItem *, ConnectorItem *);
 	virtual void viewGeometryConversionHack(ViewGeometry &, ModelPart *);
+	void prepDeleteOtherPropsNumbers(const QString & propertyName, ItemBase * itemBase, long id, const QString & newModuleID, QUndoCommand * parentCommand);
 
 protected:
 	static bool lessThan(int a, int b);

@@ -84,6 +84,7 @@ along with Fritzing.  If not, see <http://www.gnu.org/licenses/>.
 #include "../utils/zoomslider.h"
 #include "../partseditor/pemainwindow.h"
 #include "../help/firsttimehelpdialog.h"
+#include "../simulation/simulator.h"
 
 FTabWidget::FTabWidget(QWidget * parent) : QTabWidget(parent)
 {
@@ -127,7 +128,7 @@ void FTabBar::paintEvent(QPaintEvent * event) {
 		// TODO: how to append spaces from the language direction
 
 		for (int i = 0; i < this->count(); ++i) {
-			QStyleOptionTabV3 tab;
+			QStyleOptionTab tab;
 			initStyleOption(&tab, 0);
 			//DebugDialog::debug(QString("state %1").arg(tab.state));
 			QString text = tabText(i);
@@ -278,8 +279,8 @@ int MainWindow::UntitledSketchIndex = 1;
 int MainWindow::CascadeFactorX = 21;
 int MainWindow::CascadeFactorY = 19;
 
-static const int MainWindowDefaultWidth = 840;
-static const int MainWindowDefaultHeight = 600;
+static constexpr int MainWindowDefaultWidth = 1024;
+static constexpr int MainWindowDefaultHeight = 768;
 
 int MainWindow::AutosaveTimeoutMinutes = 10;   // in minutes
 bool MainWindow::AutosaveEnabled = true;
@@ -479,6 +480,8 @@ void MainWindow::init(ReferenceModel *referenceModel, bool lockFiles) {
 	initWelcomeView();
 	initSketchWidgets(true);
 	initProgrammingWidget();
+
+	m_simulator = new Simulator(this);
 
 	m_undoView = new QUndoView();
 	m_undoGroup = new QUndoGroup(this);
@@ -1020,6 +1023,47 @@ SketchToolButton *MainWindow::createNoteButton(SketchAreaWidget *parent) {
 	return noteButton;
 }
 
+
+QWidget *MainWindow::createSimulationButton(SketchAreaWidget *parent) {
+	QStackedWidget* widget = new QStackedWidget(parent);
+	widget->setObjectName("simulatorbuttonstackwidget");
+	widget->setSizePolicy(QSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum));
+
+	QToolButton* simulationButton = new QToolButton(widget);
+	simulationButton->setObjectName("simulationButton");
+	simulationButton->setIconSize(QSize(45,24));
+	simulationButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	simulationButton->setDefaultAction(m_startSimulatorAct);
+	simulationButton->setText(tr("Simulate"));
+	simulationButton->setIcon(QIcon(QPixmap(":/resources/images/icons/toolbarSimulationEnabled_icon.png")));
+	widget->addWidget(simulationButton);
+
+	QToolButton* stopSimulationButton = new QToolButton(widget);
+	stopSimulationButton->setObjectName("stopSimulationButton");
+	stopSimulationButton->setIconSize(QSize(45,24));
+	stopSimulationButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	stopSimulationButton->setDefaultAction(m_stopSimulatorAct);
+	stopSimulationButton->setText(tr("Stop"));
+	stopSimulationButton->setIcon(QIcon(QPixmap(":/resources/images/icons/toolbarStopSimulationEnabled_icon.png")));
+	widget->addWidget(stopSimulationButton);
+
+	connect(m_simulator, &Simulator::simulationStartedOrStopped, this, [=](bool running) {
+		if (running) {
+			widget->setCurrentWidget(stopSimulationButton);
+		} else {
+			widget->setCurrentWidget(simulationButton);
+		}
+	});
+	connect(m_simulator, &Simulator::simulationEnabled, this, [=](bool enabled) {
+		widget->setVisible(enabled);
+	});
+
+	emit m_simulator->simulationEnabled(m_simulator->isEnabled());
+	emit m_simulator->simulationStartedOrStopped(m_simulator->isSimulating());
+
+	return widget;
+}
+
 SketchToolButton *MainWindow::createExportEtchableButton(SketchAreaWidget *parent) {
 	QList<QAction*> actions;
 	actions << m_exportEtchablePdfAct << m_exportEtchableSvgAct << m_exportGerberAct;
@@ -1064,15 +1108,17 @@ QList<QWidget*> MainWindow::getButtonsForView(ViewLayer::ViewID viewId) {
 		break;
 	}
 
-	retval << createRotateButton(parent);
+	retval << createRotateButton(parent);	
 	switch (viewId) {
 	case ViewLayer::BreadboardView:
-		retval << createFlipButton(parent) << createRoutingStatusLabel(parent);
+		retval << createFlipButton(parent) << createRoutingStatusLabel(parent)
+			   << createSimulationButton(parent);
 		break;
 	case ViewLayer::SchematicView:
 		retval << createFlipButton(parent)
 		       << createAutorouteButton(parent)
-		       << createRoutingStatusLabel(parent);
+			   << createRoutingStatusLabel(parent)
+			   << createSimulationButton(parent);
 		break;
 	case ViewLayer::PCBView:
 		retval << createViewFromButton(parent)
@@ -1167,6 +1213,8 @@ void MainWindow::tabWidget_currentChanged(int index) {
 		setActionsIcons(index, actions);
 	}
 
+	setTitle();
+
 	if (widget == NULL) {
 		m_firstTimeHelpAct->setEnabled(false);
 		return;
@@ -1198,8 +1246,6 @@ void MainWindow::tabWidget_currentChanged(int index) {
 	updateLayerMenu(true);
 	updateTraceMenu();
 	updateTransformationActions();
-
-	setTitle();
 
 	if (m_infoView) {
 		m_currentGraphicsView->updateInfoView();
@@ -1688,6 +1734,114 @@ void MainWindow::loadBundledPartFromWeb() {
 }
 */
 
+QList<ModelPart*> MainWindow::loadPart(const QString &fzpFile, bool addToBin) {
+	QDir destFolder = QDir::temp();
+
+	FolderUtils::createFolderAndCdIntoIt(destFolder, TextUtils::getRandText());
+	QString tmpDirPath = destFolder.path();
+
+	QDir tmpDir(tmpDirPath);
+
+	QList<ModelPart*> mps;
+	QMap<QString, QString> map;
+
+	if ( QFileInfo(fzpFile).exists()) {
+		map = TextUtils::parseFileForViewImages(fzpFile);
+		if(map.count() != 4) {
+			FMessageBox::warning(
+				this,
+				tr("Fritzing"),
+				tr("Local part '%1' incomplete, only '%2' layers.").arg(fzpFile).arg(map.count())
+			);
+		}
+		QDir path = QFileInfo(fzpFile).path();
+		foreach(QString key, map.keys()) {
+			QString file = map[key];
+			if(!file.startsWith(key + "/")) {
+				// We can add the missing "svg." prefix here.
+				// However, we can not add the view prefix, as we would have to modify the part file.
+				// Idea: Why not let Fritzing derive the folder from the view id or a real folder name
+				// instead of the using a filename prefix? Like we do it in the above call to
+				// parseFileForViewImages(). Doing this would require some
+				// changes and a lot of tests, but might simplify creating parts in the future.
+				FMessageBox::warning(
+					this,
+					tr("Fritzing"),
+					tr("View '%1' should be prefixed with '%2/'. Trying to continue.").arg(file, key)
+				);
+			}
+
+			if (key == "icon" && file.startsWith("breadboard")) {
+				// We make an exception for icon files, allow to reuse the breadboard view.
+				continue;
+			}
+
+			if(!QFileInfo(path.filePath(file)).exists()) {
+				//tr("File '%1' for view '%2' not found in subfolder, trying prefix instead of folder.").arg(file, key)
+				// e.g. "breadboard_whatever/image.svg" -> "breadboard.image.svg"
+				file = key + "." + QFileInfo(file).fileName();
+			}
+
+			if(QFileInfo(path.filePath(file)).exists()) {
+				if (!QFile::copy(path.filePath(file), tmpDir.filePath("svg." + file))) {
+					FMessageBox::warning(
+						this,
+						tr("Fritzing"),
+						tr("Could not copy subfile '%1' to '%2'").arg(path.filePath(file), tmpDir.filePath("svg." + file))
+					);
+					return QList<ModelPart*>();
+				}
+			} else {
+				FMessageBox::warning(
+					this,
+					tr("Fritzing"),
+					tr("Local part '%1' incomplete, subfile not found '%2'").arg(fzpFile, file)
+				);
+				return QList<ModelPart*>();
+			}
+		}
+		QString fzpTemp = QFileInfo(fzpFile).fileName();
+		if(!fzpTemp.startsWith("part.")) {
+			fzpTemp = "part." + fzpTemp;
+		}
+		QFile::copy(fzpFile, tmpDir.filePath(fzpTemp));
+	} else {
+		FMessageBox::warning(
+			this,
+			tr("Fritzing"),
+			tr("Unable to open local part '%1'").arg(fzpFile)
+		);
+		return QList<ModelPart*>();
+	}
+
+
+	try {
+		mps = moveToPartsFolder(tmpDir, this, addToBin, true, FolderUtils::getUserPartsPath(), "user", true);
+	}
+	catch (const QString & msg) {
+		FMessageBox::warning(
+			this,
+			tr("Fritzing"),
+			msg
+		);
+		return QList<ModelPart*>();
+	}
+
+	if (mps.count() < 1) {
+		// if this fails, that means that the bundling failed
+		FMessageBox::warning(
+			this,
+			tr("Fritzing"),
+			tr("Unable to load part from '%1'").arg(fzpFile)
+		);
+		return QList<ModelPart*>();
+	}
+
+	FolderUtils::rmdir(tmpDirPath);
+
+	return mps;
+}
+
 QList<ModelPart*> MainWindow::loadBundledPart(const QString &fileName, bool addToBin) {
 	QDir destFolder = QDir::temp();
 
@@ -1828,7 +1982,7 @@ QList<ModelPart*> MainWindow::moveToPartsFolder(QDir &unzipDir, MainWindow* mw, 
 	QList<ModelPart*> retval;
 
 	if (mw == NULL) {
-		throw tr("MainWindow::moveToPartsFolder mainwindow missing");
+		throw "MainWindow::moveToPartsFolder mainwindow missing";
 	}
 
 	namefilters.clear();
@@ -1838,7 +1992,7 @@ QList<ModelPart*> MainWindow::moveToPartsFolder(QDir &unzipDir, MainWindow* mw, 
 	if (importingSinglePart && partEntryInfoList.count() > 0) {
 		QString moduleID = TextUtils::parseFileForModuleID(partEntryInfoList[0].absoluteFilePath());
 		if (!moduleID.isEmpty() && m_referenceModel->retrieveModelPart(moduleID)) {
-			throw tr("There is already a part with id '%1' loaded into Fritzing.").arg(moduleID);
+			throw QString("There is already a part with id '%1' loaded into Fritzing.").arg(moduleID);
 		}
 	}
 
@@ -1855,7 +2009,7 @@ QList<ModelPart*> MainWindow::moveToPartsFolder(QDir &unzipDir, MainWindow* mw, 
 		//DebugDialog::debug("unzip part " + file.absoluteFilePath());
 		ModelPart * mp = mw->copyToPartsFolder(file, addToAlien, prefixFolder, destFolder);
 		retval << mp;
-		if (addToBin) {
+		if (addToBin && mp) {
 			// should only be here when adding single new part
 			m_binManager->addToMyParts(mp);
 		}
@@ -3199,4 +3353,18 @@ void MainWindow::noSchematicConversion() {
 
 void MainWindow::setInitialTab(int tab) {
 	m_initialTab = tab;
+}
+
+void MainWindow::triggerSimulator() {
+	m_simulator->triggerSimulation();
+}
+
+bool MainWindow::isSimulatorEnabled() {
+	return m_simulator->isEnabled();
+}
+
+void MainWindow::enableSimulator(bool enable) {
+	if (m_simulator) {
+		m_simulator->enable(enable);
+	}
 }

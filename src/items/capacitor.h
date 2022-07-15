@@ -39,6 +39,7 @@ public:
 	void getProperties(QHash<QString, QString> &);
 
 public slots:
+	void textModified(QValidator::State state);
 	void propertyEntry(const QString & text);
 	void simplePropertyEntry(const QString & text);
 
